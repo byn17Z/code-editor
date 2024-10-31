@@ -1,0 +1,9 @@
+D:/Study/CSC/3002/Project/untitled/build/Desktop_Qt_MinGW_13_1_0_64_bit-Debug/CMakeFiles/untitled.dir
+D:/Study/CSC/3002/Project/untitled/build/Desktop_Qt_MinGW_13_1_0_64_bit-Debug/CMakeFiles/edit_cache.dir
+D:/Study/CSC/3002/Project/untitled/build/Desktop_Qt_MinGW_13_1_0_64_bit-Debug/CMakeFiles/rebuild_cache.dir
+D:/Study/CSC/3002/Project/untitled/build/Desktop_Qt_MinGW_13_1_0_64_bit-Debug/CMakeFiles/list_install_components.dir
+D:/Study/CSC/3002/Project/untitled/build/Desktop_Qt_MinGW_13_1_0_64_bit-Debug/CMakeFiles/install.dir
+D:/Study/CSC/3002/Project/untitled/build/Desktop_Qt_MinGW_13_1_0_64_bit-Debug/CMakeFiles/install/local.dir
+D:/Study/CSC/3002/Project/untitled/build/Desktop_Qt_MinGW_13_1_0_64_bit-Debug/CMakeFiles/install/strip.dir
+D:/Study/CSC/3002/Project/untitled/build/Desktop_Qt_MinGW_13_1_0_64_bit-Debug/CMakeFiles/untitled_autogen_timestamp_deps.dir
+D:/Study/CSC/3002/Project/untitled/build/Desktop_Qt_MinGW_13_1_0_64_bit-Debug/CMakeFiles/untitled_autogen.dir
