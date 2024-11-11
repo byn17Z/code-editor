@@ -1,17 +1,21 @@
 #include "widget.h"
+#include "mytexteditor.h"
 #include <QPushButton>
 #include <QLine>
 #include <QTextEdit>
+#include <QTextBrowser>
 #include <QStatusBar>
 #include <QFrame>
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
 {
-    // this->resize(900, 600);
+    // set window
     this->setFixedSize(900, 600);
     this->setWindowTitle("Editor");
 
+
+    // set tool bar
     QPushButton* btnFile = new QPushButton("File", this);
     btnFile->move(0, 0);
 
@@ -30,20 +34,47 @@ Widget::Widget(QWidget *parent)
     QPushButton* btnRun = new QPushButton("Run", this);
     btnRun->move(375, 0);
 
-    QTextEdit* textEditor = new QTextEdit(this);
-    textEditor->resize(790, 300);
-    textEditor->move(50, 50);
+    QPushButton* btnRefresh = new QPushButton("Refresh", this);
+    btnRefresh->move(450, 0);
 
-    // QFrame* tFrame = new QFrame(this);
-    // tFrame->resize(900, 175);
-    // tFrame->move(0, 400);
-    // tFrame->setLineWidth(5);
-    // tFrame->setFrameStyle(QFrame::HLine | QFrame::Plain);
 
+
+    // set edit area
+    MyTextEditor *textEditor = new MyTextEditor(this);
+
+
+    connect(btnFile, &QAbstractButton::pressed, textEditor, &QTextEdit::clear);
+    connect(btnSave, &QAbstractButton::pressed, textEditor, &QTextEdit::clear);
+    connect(btnEdit, &QAbstractButton::pressed, textEditor, &QTextEdit::clear);
+    connect(btnDebug, &QAbstractButton::pressed, textEditor, &QTextEdit::clear);
+    connect(btnCompile, &QAbstractButton::pressed, textEditor, &QTextEdit::clear);
+    connect(btnRun, &QAbstractButton::pressed, textEditor, &QTextEdit::clear);
+    connect(btnRefresh, &QAbstractButton::pressed, textEditor, &MyTextEditor::updateTextEditor);
+
+    // std::string strHtml = "<span style=\"color: red;\">Edit Area</span>";
+    // QString qstrHtml = QString::fromStdString(strHtml);
+    // textEditor->QTextEdit::setHtml(qstrHtml);
+
+    // connect(textEditor, &QTextEdit::textChanged, this, &Widget::setMyText);
+
+
+
+
+    // set terminal bar
+    QTextEdit* term = new QTextEdit(this);
+    term->resize(800, 160);
+    term->move(50, 420);
+
+
+    // set status bar
     QStatusBar* statusBar = new QStatusBar(this);
-    statusBar->move(0, 550);
-    statusBar->resize(900, 50);
+    statusBar->move(0, 575);
+    statusBar->resize(900, 20);
     statusBar->show();
+    statusBar->showMessage("Ready", 1000);
 }
 
 Widget::~Widget() {}
+
+
+
