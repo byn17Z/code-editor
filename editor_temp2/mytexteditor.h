@@ -21,42 +21,18 @@ public:
     ~MyTextEditor();
 
 
-    //声明属性 undoQueue <- 记录文本区历史记录
-    Q_PROPERTY(std::queue<std::string>* undoQueue MEMBER m_undoQueue READ undoQueue WRITE setUndoQueue NOTIFY undoUpdated)
-
-    // READ FUNCTION for undoQueue
-    std::queue<std::string>* undoQueue();
-    std::string undoLast();
-
-
-    // READ FUNCTION for m_undoTimes
-    int undoTimes();
-
-
-signals:
-    // SIGNAL FUNCTION for undoQueue
-    void undoUpdated(std::queue<std::string>* updatedUndoQueue);
 
 
 public slots:
-    // WRITE FUNCTION for undoQueue
-    void setUndoQueue(std::queue<std::string>* newUndoQueue);
-    void pushToUndo(std::string newText);
+
+    void refreshEditor();
 
 
-    // WRITE FUNCTION for private m_undoTimes
-    void setUndoTimes(int newTimes = 5);
-
-
-    // 更新文本区状态的槽函数
-    void updateTextEditor();
-
-    // void checkTextChanged();
 
 
 private:
     // MEMBER VARIABLE for undoQueue
-    std::queue<std::string>* m_undoQueue;
+    std::queue<QString> m_undoQueue;
 
     // 撤回次数
     int m_undoTimes = 5;

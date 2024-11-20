@@ -25,6 +25,7 @@ Widget::Widget(QWidget *parent)
 
 
 
+
     // set tool bar
     QMenuBar* myBar = new QMenuBar(this);
 
@@ -58,6 +59,18 @@ Widget::Widget(QWidget *parent)
         QMenu* menuDebug = new QMenu("Debug", myBar);
         myBar->addMenu(menuDebug);
 
+            QAction* actDebug = new QAction("Debug", this);
+            menuDebug->addAction(actDebug);
+
+            QAction* actDNext = new QAction("Next", this);
+            menuDebug->addAction(actDNext);
+
+            QAction* actDPre = new QAction("Previous", this);
+            menuDebug->addAction(actDPre);
+
+            QAction* actDJump = new QAction("Jump", this);
+            menuDebug->addAction(actDJump);
+
         QMenu* menuCompile = new QMenu("Compile", myBar);
         myBar->addMenu(menuCompile);
 
@@ -66,10 +79,13 @@ Widget::Widget(QWidget *parent)
     btnRefresh->move(450, 0);
 
 
-
     // set edit area
     MyTextEditor *textEditor = new MyTextEditor(this);
-    this->setEditor(textEditor);
+    this->m_myEditor = textEditor;
+
+    connect(btnRefresh, &QAbstractButton::pressed, textEditor, &MyTextEditor::refreshEditor);
+
+
     //TEST
     // std::string strHtml = "<span style=\"color: red;\">Edit Area</span>";
     // QString qstrHtml = QString::fromStdString(strHtml);
@@ -77,17 +93,11 @@ Widget::Widget(QWidget *parent)
     // connect(textEditor, &QTextEdit::textChanged, this, &Widget::setisCFileSaved);
 
 
-
-    // connect(btnRefresh, &QAbstractButton::pressed, textEditor, &MyTextEditor::updateTextEditor);
-    // connect(textEditor, &QTextEdit::textChanged, this, &Widget::setMyText);
-
-
-
-
     // set terminal bar
-    QTextEdit* term = new QTextBrowser(this);
+    QTextBrowser* term = new QTextBrowser(this);
     term->resize(800, 160);
     term->move(50, 420);
+    this->m_myTerminal = term;
 
 
     // set status bar
@@ -103,17 +113,17 @@ Widget::Widget(QWidget *parent)
 
 //QPROPEERTY myEditor
 //READ - myEditor
-MyTextEditor* Widget::myEditor()
-{
-    return this->m_myEditor;
-}
+// MyTextEditor* Widget::myEditor()
+// {
+//     return this->m_myEditor;
+// }
 
 
-//WRITE - myEditor
-void Widget::setEditor(MyTextEditor* textEditor)
-{
-    this->m_myEditor = textEditor;
-}
+// //WRITE - myEditor
+// void Widget::setEditor(MyTextEditor* textEditor)
+// {
+//     this->m_myEditor = textEditor;
+// }
 
 
 //SIGNAL - myEditor
@@ -123,18 +133,18 @@ void Widget::setEditor(MyTextEditor* textEditor)
 
 
 //QPROPEERTY cFilePath
-//READ - cFilePath
-QString Widget::cFilePath()
-{
-    return this->m_cFilePath;
-}
+// //READ - cFilePath
+// QString Widget::cFilePath()
+// {
+//     return this->m_cFilePath;
+// }
 
 
-//WRITE - cFilePath
-void Widget::setcFilePath(QString path)
-{
-    this->m_cFilePath = path;
-}
+// //WRITE - cFilePath
+// void Widget::setcFilePath(QString path)
+// {
+//     this->m_cFilePath = path;
+// }
 
 
 //SIGNAL - cFilePath
@@ -186,7 +196,8 @@ void Widget::newSlot()
         this->Widget::closeSlot();
 
         // 储存新建文件的路径为当前路径，供保存时使用
-        this->setcFilePath(fileName);
+        this->m_cFilePath = fileName;
+        this->m_myTerminal->setPlainText(fileName);
 
         QFile file(fileName);
         file.open(QIODevice::WriteOnly);
@@ -218,7 +229,8 @@ void Widget::openSlot()
         this->Widget::closeSlot();
 
         // 储存打开文件的路径为当前路径，供保存时使用
-        this->setcFilePath(fileName);
+        this->m_cFilePath = fileName;
+        this->m_myTerminal->setPlainText(fileName);
 
         // 从当前路径载入文件内容
         QFile file(fileName);
@@ -269,8 +281,7 @@ void Widget::saveAsSlot()
 
     if (fileName.isEmpty()) {
         // 用户有主动关闭/取消另存为窗口、未选择路径的可能性
-        // 保存失败
-        // 在actClose关闭文件的过程中，保存成功或失败涉及actClose是否继续的判断
+        // 在actClose关闭文件的过程中，保存是否完成涉及actClose是否继续的判断
         this->m_saveSuccess = 0;
         return;
     }
@@ -286,7 +297,8 @@ void Widget::saveAsSlot()
 
         // 如果用户还没有打开或创建过文件，则储存选择另存为的路径作为当前路径
         if (this->m_cFilePath.isEmpty()) {
-            this->setcFilePath(fileName);
+            this->m_cFilePath = fileName;
+            this->m_myTerminal->setPlainText(fileName);
         }
 
         // 保存成功
@@ -304,7 +316,9 @@ void Widget::closeSlot()
 
     // 未打开文件且内容为空时，直接关闭（跳过）
     if (this->m_cFilePath.isEmpty()) {
-        if (this->m_myEditor->toPlainText().isEmpty()) {return;}
+        if (this->m_myEditor->toPlainText().isEmpty()) {
+            this->m_myTerminal->clear();
+            return;}
     }
 
     // 有打开文件 或 未打开文件但有内容 时，提示是否保存
@@ -326,6 +340,7 @@ void Widget::closeSlot()
         if (this->m_saveSuccess) {
             this->m_cFilePath = "";
             this->m_myEditor->clear();
+            this->m_myTerminal->clear();
         }
 
         // this->m_isCFileSaved = 1;
@@ -336,6 +351,7 @@ void Widget::closeSlot()
         // 只清空不保存
         this->m_cFilePath = "";
         this->m_myEditor->clear();
+        this->m_myTerminal->clear();
         // this->m_isCFileSaved = 1;
         break;
 
@@ -349,6 +365,19 @@ void Widget::closeSlot()
 
     }
 }
+
+
+
+
+// void Widget::refreshText()
+// {
+//     QString newText = this->m_myEditor->QTextEdit::toPlainText();
+//     this->m_myEditor->QTextEdit::clear();
+//     qDebug() << newText;
+//     newText.append("->HelloWorld");
+//     qDebug() << newText;
+//     this->m_myEditor->QTextEdit::setPlainText(newText);
+// }
 
 
 
