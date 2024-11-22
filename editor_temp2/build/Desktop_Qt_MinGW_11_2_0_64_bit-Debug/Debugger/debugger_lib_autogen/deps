@@ -1,0 +1,20 @@
+debugger_lib_autogen/timestamp: \
+	D:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/CMakeCInformation.cmake \
+	D:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/CMakeCommonLanguageInclude.cmake \
+	D:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/CMakeLanguageInformation.cmake \
+	D:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/Compiler/GNU-C.cmake \
+	D:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/Compiler/GNU.cmake \
+	D:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/Platform/Windows-GNU-C-ABI.cmake \
+	D:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/Platform/Windows-GNU-C.cmake \
+	D:/Qt/Tools/CMake_64/share/cmake-3.29/Modules/Platform/Windows-GNU.cmake \
+	D:/Study/CSC/3002/Project/editor_temp2/Debugger/CMakeLists.txt \
+	D:/Study/CSC/3002/Project/editor_temp2/Debugger/src/APIOfLexical_debugver.cpp \
+	D:/Study/CSC/3002/Project/editor_temp2/Debugger/src/HelperFunction.cpp \
+	D:/Study/CSC/3002/Project/editor_temp2/Debugger/src/debug.cpp \
+	D:/Study/CSC/3002/Project/editor_temp2/Debugger/src/debugger.cpp \
+	D:/Study/CSC/3002/Project/editor_temp2/Debugger/src/rawprocessing.cpp \
+	D:/Study/CSC/3002/Project/editor_temp2/Debugger/src/scopesegment.cpp \
+	D:/Study/CSC/3002/Project/editor_temp2/Debugger/src/users.cpp \
+	D:/Study/CSC/3002/Project/editor_temp2/build/Desktop_Qt_MinGW_11_2_0_64_bit-Debug/.qtc/package-manager/auto-setup.cmake \
+	D:/Study/CSC/3002/Project/editor_temp2/build/Desktop_Qt_MinGW_11_2_0_64_bit-Debug/CMakeFiles/3.29.3/CMakeCCompiler.cmake \
+	D:/Qt/Tools/CMake_64/bin/cmake.exe
