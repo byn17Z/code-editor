@@ -174,7 +174,7 @@ vector<strs> ScopeSegment::findstrs() {
 			pos += 2;
 
 			while (tokens[pos].second != "}"||tokens[pos+1].second!=";") {
-                if (typeword.contains(tokens[pos].second)&&tokens[pos+1].first=="IDEN") {
+				if (typeword.contains(tokens[pos].second)&&tokens[pos+1].first=="IDEN") {
 					pair<string, string> addment = make_pair(tokens[pos].second, tokens[pos + 1].second);
 					result.strcontent.push_back(addment);
 				}

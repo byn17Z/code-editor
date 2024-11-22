@@ -1,9 +1,11 @@
 #include "widget.h"
 #include "mytexteditor.h"
+#include "djumpwindow.h"
 #include <QPushButton>
 #include <QMenuBar>
 #include <QMenu>
 #include <QAction>
+#include <QLineEdit>
 #include <QTextEdit>
 #include <QTextBrowser>
 #include <QStatusBar>
@@ -12,6 +14,7 @@
 #include <QIODevice>
 #include <QFile>
 #include <QMessageBox>
+#include <QLabel>
 
 
 //CONSTRUCTOR
@@ -61,15 +64,24 @@ Widget::Widget(QWidget *parent)
 
             QAction* actDebug = new QAction("Debug", this);
             menuDebug->addAction(actDebug);
+            connect(actDebug, &QAction::triggered, this, &Widget::debugSlot);
+
 
             QAction* actDNext = new QAction("Next", this);
             menuDebug->addAction(actDNext);
+            connect(actDNext, &QAction::triggered, this, &Widget::dNextSlot);
 
             QAction* actDPre = new QAction("Previous", this);
             menuDebug->addAction(actDPre);
+            connect(actDPre, &QAction::triggered, this, &Widget::dPreSlot);
 
             QAction* actDJump = new QAction("Jump", this);
             menuDebug->addAction(actDJump);
+            // connect(actDJump, &QAction::triggered, this, &Widget::dJumpSlot);
+
+            QAction* actDTmn = new QAction("Terminate", this);
+            menuDebug->addAction(actDTmn);
+            connect(actDTmn, &QAction::triggered, this, &Widget::dTmnSlot);
 
         QMenu* menuCompile = new QMenu("Compile", myBar);
         myBar->addMenu(menuCompile);
@@ -80,10 +92,10 @@ Widget::Widget(QWidget *parent)
 
 
     // set edit area
-    MyTextEditor *textEditor = new MyTextEditor(this);
-    this->m_myEditor = textEditor;
+    // MyTextEditor *textEditor = new MyTextEditor(this);
+    this->m_myEditor = new MyTextEditor(this);
 
-    connect(btnRefresh, &QAbstractButton::pressed, textEditor, &MyTextEditor::refreshEditor);
+    connect(btnRefresh, &QAbstractButton::pressed, this->m_myEditor, &MyTextEditor::refreshEditor);
 
 
     //TEST
@@ -106,6 +118,11 @@ Widget::Widget(QWidget *parent)
     statusBar->resize(900, 20);
     statusBar->show();
     statusBar->showMessage("Ready", 1000);
+
+
+    // this->m_dJumpWin = new DJumpWindow(this);
+    // this->m_dJumpWin->hide();
+
 }
 
 
@@ -171,15 +188,26 @@ Widget::Widget(QWidget *parent)
 // // void Widget::isCFileSavedChanged() {}
 
 
+// READ - m_myDebugger
+MyDebugger* Widget::myDebugger()
+{
+    return this->m_myDebugger;
+}
+
+
 
 
 //ACTION SLOTS
 
 
+//MENU :File
 //actNew 新建文件
 void Widget::newSlot()
 {
-    // qDebug() << this->m_isCFileSaved;
+    if (this->m_isDebuggerOn == 1) {
+        qDebug() << "not available: debugger on";
+        return;
+    }
 
     // prompt用户选择新建路径
     QString fileName = QFileDialog::getSaveFileName(
@@ -211,7 +239,10 @@ void Widget::newSlot()
 //actOpen 打开文件
 void Widget::openSlot()
 {
-    // qDebug() << this->m_isCFileSaved;
+    if (this->m_isDebuggerOn == 1) {
+        qDebug() << "not available: debugger on";
+        return;
+    }
 
     // prompt用户选择文件
     QString fileName = QFileDialog::getOpenFileName(
@@ -247,7 +278,10 @@ void Widget::openSlot()
 //actSave 保存文件
 void Widget::saveSlot()
 {
-    // qDebug() << this->m_isCFileSaved;
+    if (this->m_isDebuggerOn == 1) {
+        qDebug() << "not available: debugger on";
+        return;
+    }
 
     // 未打开或创建文件时，跳转save as
     if (this->m_cFilePath.isEmpty()) {this->Widget::saveAsSlot();}
@@ -271,7 +305,10 @@ void Widget::saveSlot()
 //actSaveAs 另存为
 void Widget::saveAsSlot()
 {
-    // qDebug() << this->m_isCFileSaved;
+    if (this->m_isDebuggerOn == 1) {
+        qDebug() << "not available: debugger on";
+        return;
+    }
 
     // prompt用户选择保存路径
     QString fileName = QFileDialog::getSaveFileName(
@@ -312,7 +349,10 @@ void Widget::saveAsSlot()
 //actClose 关闭文件并清空窗口
 void Widget::closeSlot()
 {
-    // qDebug() << this->m_isCFileSaved;
+    if (this->m_isDebuggerOn == 1) {
+        qDebug() << "not available: debugger on";
+        return;
+    }
 
     // 未打开文件且内容为空时，直接关闭（跳过）
     if (this->m_cFilePath.isEmpty()) {
@@ -369,21 +409,176 @@ void Widget::closeSlot()
 
 
 
-// void Widget::refreshText()
-// {
-//     QString newText = this->m_myEditor->QTextEdit::toPlainText();
-//     this->m_myEditor->QTextEdit::clear();
-//     qDebug() << newText;
-//     newText.append("->HelloWorld");
-//     qDebug() << newText;
-//     this->m_myEditor->QTextEdit::setPlainText(newText);
-// }
+//MENU: Debug
+void Widget::updateDebuggerInfo()
+{
+    if (this->m_myDebugger == NULL) {return;}
+
+    // 获取debuggeer数据
+    qDebug() << "before show()";
+    std::pair<VT, int> debugInfo = this->m_myDebugger->show();
+    qDebug() << "after show()";
+    VT varTable = debugInfo.first;
+
+    std::string clineNumStr = "CurrentLineNum:    ";
+    clineNumStr += std::to_string(debugInfo.second);
+    QString clineNum = QString::fromStdString(clineNumStr);
+    qDebug() << QString::fromStdString(clineNumStr);
+
+    // 展示debugger数据
+    this->m_myTerminal->append("Debugger>\n");
+    this->m_myTerminal->append(clineNum);
+
+    qDebug() << "VT size = " << varTable.table.size() << "\n";
+
+    for (int i = 0; i < varTable.table.size(); i++) {
+        // std::array<std::string,4> cVar = varTable.table[i];
+        // std::string varScope = cVar[0];
+        // std::string varType = cVar[1];
+        // std::string varName = cVar[2];
+        // std::string varVal = cVar[3];
+        std::string strInfo = "";
+        qDebug() << "print info preparation iter: " << i << "\n";
+        std::array title = {"scope", "type", "name", "value"};
+        for (int t = 0; t < 4; t++) {
+            qDebug() << "t = " << t;
+            qDebug() << "title: " << QString::fromStdString(title[t]);
+            qDebug() << "before get content: strInfo = " << QString::fromStdString(strInfo);
+            strInfo += varTable.table[i][t];
+            qDebug() << "after get content: strInfo = " << QString::fromStdString(strInfo) <<"\n";
+            strInfo += "    ";
+        }
+        qDebug() << "before print info";
+        this->m_myTerminal->append(QString::fromStdString(strInfo));
+        qDebug() << "after print info" << "\n";
+
+    }
+    this->m_myTerminal->append("\n");
+}
 
 
+//actDebug 启动debugger
+void Widget::debugSlot()
+{
+    this->saveSlot();
+    if (m_cFilePath.isEmpty()) {return;}
+
+    this->m_myEditor->setReadOnly(1);
+
+    if (m_isDebuggerOn == 1) {
+        qDebug() << "debugger restart";
+        this->m_myTerminal->clear();
+        this->m_myTerminal->setPlainText(this->m_cFilePath);
+    }
+    this->m_isDebuggerOn = 1;
+
+    qDebug() << "debugger start";
+    qDebug() << "m_cFilePath: " << this->m_cFilePath;
+    // std::string fileName = this->m_cFilePath.toStdString();
+    qDebug() << "before create debugger";
+    // if (this->m_myDebugger == NULL) {
+    //     qDebug() << "m_myDebugger is NULL now";
+    // }
+
+    this->m_myDebugger = new MyDebugger(this->m_cFilePath.toStdString());
+
+    qDebug() << "after create debugger";
+
+    this->updateDebuggerInfo();
+
+    // this->m_myEditor->setReadOnly(0);
+}
+
+
+//actDNext
+void Widget::dNextSlot()
+{
+    if (m_isDebuggerOn == 0) {
+        qDebug() << "invalid \"next\" action";
+        return;
+    }
+
+    // this->m_myEditor->setReadOnly(1);
+    qDebug() << "before next";
+    bool isNextSuccess = this->m_myDebugger->next();
+    qDebug() << "after next";
+
+    if (isNextSuccess){
+        this->updateDebuggerInfo();
+    }
+    else {
+        this->m_myTerminal->append("last step of the program");
+        return;
+    }
+
+}
+
+
+//actDPre
+void Widget::dPreSlot()
+{
+    if (m_isDebuggerOn == 0) {
+        qDebug() << "invalid \"previous\" action";
+        return;
+    }
+
+    // this->m_myEditor->setReadOnly(1);
+    qDebug() << "before pre";
+    bool isPreSuccess = this->m_myDebugger->previous();
+    qDebug() << "after pre";
+
+    if (isPreSuccess) {
+        this->updateDebuggerInfo();
+    }
+    else {
+        this->m_myTerminal->append("first step of the program");
+    }
+}
+
+
+//actDJump
+void Widget::dJumpSlot()
+{
+    if (m_isDebuggerOn == 0) {
+        qDebug() << "invalid \"jump\" action";
+        return;
+    }
+
+    // this->m_myEditor->setReadOnly(1);
+    // this->m_dJumpWin->show();
+
+    // DJumpWindow* dJumpWin = new DJumpWindow(this);
+    // dJumWin->show();
+}
+
+
+//actDTmn
+void Widget::dTmnSlot()
+{
+    if (m_isDebuggerOn == 0) {
+        qDebug() << "invalid \"Terminate\" action";
+        return;
+    }
+
+    this->m_myDebugger->User::~User();
+    this->m_myDebugger = NULL;
+    if (this->m_myDebugger == NULL) {
+        qDebug() << "clear debugger success";
+    }
+    this->m_myTerminal->clear();
+    this->m_myTerminal->setPlainText(this->m_cFilePath);
+
+    this->m_isDebuggerOn = 0;
+    qDebug() << "debugger off";
+    this->m_myEditor->setReadOnly(0);
+}
 
 
 //DECONSTRUCTOR
-Widget::~Widget() {}
+Widget::~Widget()
+{
+    this->closeSlot();
+}
 
 
 

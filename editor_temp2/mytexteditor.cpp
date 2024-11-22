@@ -3,7 +3,7 @@
 #include <string>
 
 MyTextEditor::MyTextEditor(QWidget *parent)
-    :QTextEdit(parent)
+    : QTextEdit(parent)
 {
     this->resize(800, 350);
     this->move(50, 50);

@@ -12,6 +12,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
+
 set(PROJECT_SOURCES
         main.cpp
         widget.cpp
@@ -24,6 +25,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
 
         mytexteditor.h mytexteditor.cpp
+        mydebugger.h mydebugger.cpp
+        djumpwindow.h djumpwindow.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET untitled APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -44,13 +47,6 @@ else()
 endif()
 
 target_link_libraries(Editor PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
-
-add_subdirectory(Debugger)
-target_link_libraries(Editor PUBLIC debugger_lib)
-target_include_directories(Editor PUBLIC
-    "${PROJECT_BINARY_DIR}"
-    "${PROJECT_SOURCE_DIR}/Debugger"
-)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
@@ -76,3 +72,11 @@ install(TARGETS Editor
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(Editor)
 endif()
+
+
+add_subdirectory(Debugger)
+target_link_libraries(Editor PUBLIC debugger_lib)
+target_include_directories(Editor PUBLIC
+    "${PROJECT_BINARY_DIR}"
+    "${PROJECT_SOURCE_DIR}/Debugger"
+)

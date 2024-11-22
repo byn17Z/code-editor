@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QTextBrowser>
 #include "mytexteditor.h"
+#include "mydebugger.h"
+#include "djumpwindow.h"
 
 class Widget : public QWidget
 {
@@ -32,6 +34,9 @@ public:
     // //READ - isCFileSaved
     // bool isCFileSaved();
 
+    // READ - myDebugger
+    MyDebugger* myDebugger();
+
 
 public slots:
 
@@ -46,19 +51,20 @@ public slots:
 
 
     //ACTION SLOTS
+    // menu: file
     void newSlot();
     void openSlot();
     void saveSlot();
     void saveAsSlot();
     void closeSlot();
 
-    // void debugSlot();
-    // void dnextSlot();
-    // void dpreSlot();
-    // void djumpSlot();
-
-    // //TEXT REFRESH
-    // void refreshText();
+    // menu: debug
+    void updateDebuggerInfo();
+    void debugSlot();
+    void dNextSlot();
+    void dPreSlot();
+    void dJumpSlot();
+    void dTmnSlot();
 
 
 signals:
@@ -77,6 +83,12 @@ private:
     MyTextEditor* m_myEditor;
 
     QTextBrowser* m_myTerminal;
+
+    MyDebugger* m_myDebugger = NULL;
+
+    // DJumpWindow* m_dJumpWin;
+
+    bool m_isDebuggerOn = 0;
 
     QString m_cFilePath = "";
 

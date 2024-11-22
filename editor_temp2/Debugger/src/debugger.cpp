@@ -63,7 +63,7 @@ void VT::del(const std::string& scope){
 
 VT& VT::operator=(const VT& other) {
     if (this != &other) {
-        table = other.table; // °´Öµ´«µÝ table µÄÄÚÈÝ
+        table = other.table; // ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ table ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     }
     return *this;
 }
@@ -81,9 +81,11 @@ VT VTs::getstep(int line){
 	if(result != map.end()) {
 		return result->second;
 	}
-	else std::cerr << "nosuchline";
+    else std::cerr << "nosuchline";
 }
 
 int VTs::size() {
 	return sz;
 }
+
+
