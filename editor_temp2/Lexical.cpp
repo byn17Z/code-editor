@@ -1,3 +1,12 @@
+/* 
+读代码的时候发现一些地方可能有问题，因为编译器和编辑器都可能要处理编辑中的代码，需要较强的鲁棒性，有空的话希望可以继续测试/检查。
+还有一些新的需求（highlight相关）：
+1、“#include” 行的内容加进output里，key = "include"，不处理include的文件；
+2、comment的内容（及前后标识符）加进output里， key = "comment"；如果是 “//” 的，行末的\n提出来作为单独一项\n加入output里；
+如果这周没空的话我到时候要用的话就顺便把1、2写了，跟高亮相关的功能优先级可以往后排。
+    --commented by 聂博毅 2024.11.28
+*/
+
 #include "Lexical.h"
 #include <iostream>
 #include <fstream>
@@ -82,7 +91,7 @@ bool isComment(string& input, int pos, char peek,bool& hasBeenComment) {
         return true;
     } else if (peek == '/' && next == '*') {
 
-        if (!(last == '/' && ll == '*')) {
+        if (!(last == '/' && ll == '*')) {    // " */ " 后可能还有有效代码        --聂博毅 2024.11.28
             hasBeenComment = true;
         }
         return true;
@@ -165,7 +174,7 @@ void dealWithWhiteSpace (char peek) {
     }
 }
 
-void dealWithInclude(string& input, int& pos, string& filename) {
+void dealWithInclude(string& input, int& pos, string& filename) {    // 希望可以：1、不处理include文件；2、把#include这一行的代码加进output里，key = "include"     --聂博毅 2024.11.28
     char peek = input[pos];
     while (peek != '\"') {
         pos++;
@@ -284,7 +293,7 @@ void dealWithString(string&input, int&pos, char peek) {
     }
     pos++;
     peek = input[pos];
-    while (peek != '"') {
+    while (peek != '"') {        // 可能出现一行内找不到另一个 " 的可能性，这一行结束还找不到的话要跳出循环，并报错    --聂博毅 2024.11.28
         str += peek;
         pos += 1;
         peek = input[pos];
@@ -301,12 +310,12 @@ void dealWithChar(string&input, int&pos, char peek) {
         if (curr == 't' || curr == 'n' || curr == 'r') {
             str += curr;
             getpair("CHAR", str);
-            pos += 4;
-            return;
+            pos += 4;        // pos+=4后超出index的情况可以处理吗？    --聂博毅 2024.11.28
+            return;        // 这里return之前，最好保证找到另一个 ' ，否则报错    --聂博毅 2024.11.28
         }
     }
 
-    if (pos == input.size() || input[pos + 2] != '\'') {
+    if (pos == input.size() || input[pos + 2] != '\'') {        // pos+2好像可能超出index？（以及words函数里while条件好像已经保证了pos<input.size()？只是顺便提一嘴）    --聂博毅 2024.11.28
         string message = "There cannot be two characters in a char. ";
         error(hasError, message, row);
         return;
@@ -329,7 +338,7 @@ void words(string input, bool& hasBeenComment, bool& hasError, int row, string& 
             dealWithWhiteSpace(peek);
             pos += 1;
         }
-        else if (isComment(input, pos, peek, hasBeenComment)) {
+        else if (isComment(input, pos, peek, hasBeenComment)) {    // 希望可以把comment里的内容也加进output里，key="comment"     --聂博毅 2024.11.28
             getpair("\n", "\n");
             return;
         } else if (isLetter(peek)) {
