@@ -88,6 +88,8 @@ bool isComment(string& input, int pos, char peek,bool& hasBeenComment) {
     char last = input[length - 1];
     char ll = input[length - 2];
     if (peek == '/' && next == '/') {
+        input.pop_back();
+        getpair("comment", input);
         return true;
     } else if (peek == '/' && next == '*') {
 
@@ -174,33 +176,11 @@ void dealWithWhiteSpace (char peek) {
     }
 }
 
-void dealWithInclude(string& input, int& pos, string& filename) {    // 希望可以：1、不处理include文件；2、把#include这一行的代码加进output里，key = "include"     --聂博毅 2024.11.28
-    char peek = input[pos];
-    while (peek != '\"') {
-        pos++;
-        peek = input[pos];
-    }
-
-    pos++;
-    peek = input[pos];
-
-    string str;
-    while (isLetter(peek) || isDigit(peek)) {
-        if (pos >= input.length()) {
-            pos += 1;
-            break;
-        } else {
-            str += peek;
-            pos += 1;
-            peek = input[pos];
-        }
-    }
-
-    str += ".cpp";
-    if (str != filename) {
-        singleGetToken(str);
-    }
-
+void dealWithInclude(string& input, int& pos, string& filename) {// 希望可以：1、不处理include文件；2、把#include这一行的代码加进output里，key = "include"     --聂博毅 2024.11.28
+    input.pop_back();
+    getpair("include", input);
+    getpair("\n", "\n");
+    pos = input.length() + 2;
 }
 
 void dealWithLetter(string& input, int& pos, char peek, bool& isInclude, string& filename) {
