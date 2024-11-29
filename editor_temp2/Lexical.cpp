@@ -230,7 +230,47 @@ void dealWithDigit(string& input, int& pos, char peek) {
     getpair("NUM", str);
 }
 
+void dealWithComment(string& input, int& pos, char peek) {
+    char next = input[pos + 1];
+    input.pop_back();
+    if (peek == '/' && next == '/') {
+        string str =input.substr(pos);
+        getpair("comment", str);
+        getpair("\n", "\n");
+        pos = input.length() + 2;
+        return;
+    }
+
+    hasBeenComment = true;
+    string str;
+    while (pos < input.length()) {
+        peek = input[pos];
+        if (peek == '*') {
+            next = input[pos + 1];
+            if (next == '/') {
+                hasBeenComment = false;
+                str += "*/";
+                pos += 2;
+                getpair("comment", str);
+                input += '\n';
+                return;
+            }
+        }
+        str += peek;
+        pos++;
+    }
+    getpair("comment", str);
+}
+
 void dealWithOperator(string& input, int& pos, char peek) {
+    if (peek == '/') {
+        char next1 = input[pos + 1];
+        if (next1 == '*' || next1 == '/') {
+            dealWithComment(input, pos, peek);
+            return;
+        }
+    }
+
     string str;
     str += peek;
     if (peek == '~' || pos >= input.length()) {
@@ -318,9 +358,8 @@ void words(string input, bool& hasBeenComment, bool& hasError, int row, string& 
             dealWithWhiteSpace(peek);
             pos += 1;
         }
-        else if (isComment(input, pos, peek, hasBeenComment)) {    // 希望可以把comment里的内容也加进output里，key="comment"     --聂博毅 2024.11.28
-            getpair("\n", "\n");
-            return;
+        else if (hasBeenComment) {    // 希望可以把comment里的内容也加进output里，key="comment"     --聂博毅 2024.11.28
+            dealWithComment(input, pos, peek);
         } else if (isLetter(peek)) {
             dealWithLetter(input, pos, peek, isInclude, filename);
         } else if (isDigit(peek)) {
