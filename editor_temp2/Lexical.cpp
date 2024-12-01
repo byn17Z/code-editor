@@ -36,6 +36,7 @@ void error(bool& hasError, string errorMessage, int row) {
     hasError = true;
     error1.message = errorMessage;
     error1.row = row;
+    cout << "At row: " << row << ", " << errorMessage <<  endl;
 }
 
 void getpair(string first, string second) {
@@ -93,7 +94,7 @@ bool isComment(string& input, int pos, char peek,bool& hasBeenComment) {
         return true;
     } else if (peek == '/' && next == '*') {
 
-        if (!(last == '/' && ll == '*')) {    // " */ " 后可能还有有效代码        --聂博毅 2024.11.28
+        if (!(last == '/' && ll == '*')) {    // （已解决） " */ " 后可能还有有效代码        --聂博毅 2024.11.28
             hasBeenComment = true;
         }
         return true;
@@ -176,7 +177,7 @@ void dealWithWhiteSpace (char peek) {
     }
 }
 
-void dealWithInclude(string& input, int& pos, string& filename) {// 希望可以：1、不处理include文件；2、把#include这一行的代码加进output里，key = "include"     --聂博毅 2024.11.28
+void dealWithInclude(string& input, int& pos, string& filename) {// （已解决）希望可以：1、不处理include文件；2、把#include这一行的代码加进output里，key = "include"     --聂博毅 2024.11.28
     input.pop_back();
     getpair("include", input);
     getpair("\n", "\n");
@@ -313,10 +314,15 @@ void dealWithString(string&input, int&pos, char peek) {
     }
     pos++;
     peek = input[pos];
-    while (peek != '"') {        // 可能出现一行内找不到另一个 " 的可能性，这一行结束还找不到的话要跳出循环，并报错    --聂博毅 2024.11.28
+    while (peek != '"' && pos < input.length()) {        // （已解决）可能出现一行内找不到另一个 " 的可能性，这一行结束还找不到的话要跳出循环，并报错    --聂博毅 2024.11.28
         str += peek;
         pos += 1;
         peek = input[pos];
+    }
+
+    if (peek != '\"') {
+        string message = "There should be another \" for the string";
+        error(hasError, message, row);
     }
     pos += 1;
     getpair("STR", str);
@@ -327,15 +333,23 @@ void dealWithChar(string&input, int&pos, char peek) {
     str += input[pos + 1];
     if (str == "\\") {
         char curr = input[pos + 2];
-        if (curr == 't' || curr == 'n' || curr == 'r') {
+        if (curr == 't' || curr == 'n' || curr == 'r' || curr == '\\' || curr == '"' || curr == '\'') {
             str += curr;
             getpair("CHAR", str);
-            pos += 4;        // pos+=4后超出index的情况可以处理吗？    --聂博毅 2024.11.28
-            return;        // 这里return之前，最好保证找到另一个 ' ，否则报错    --聂博毅 2024.11.28
+            if (input[pos + 3] != '\'') {
+                string message = "There should be another \' for the character";
+                error(hasError, message, row);
+            }
+            pos += 4;        // （+4是整个char后面一位，在words中处理）pos+=4后超出index的情况可以处理吗？    --聂博毅 2024.11.28
+            return;        // (已解决）这里return之前，最好保证找到另一个 ' ，否则报错    --聂博毅 2024.11.28
+        } else {
+            string message = "There cannot be two characters in a char. ";
+            error(hasError, message, row);
+            return;
         }
     }
 
-    if (pos == input.size() || input[pos + 2] != '\'') {        // pos+2好像可能超出index？（以及words函数里while条件好像已经保证了pos<input.size()？只是顺便提一嘴）    --聂博毅 2024.11.28
+    if (pos == input.size() || input[pos + 2] != '\'' || pos + 2 < input.length()) {        // （已解决）pos+2好像可能超出index？（以及words函数里while条件好像已经保证了pos<input.size()？只是顺便提一嘴）    --聂博毅 2024.11.28
         string message = "There cannot be two characters in a char. ";
         error(hasError, message, row);
         return;
@@ -358,7 +372,7 @@ void words(string input, bool& hasBeenComment, bool& hasError, int row, string& 
             dealWithWhiteSpace(peek);
             pos += 1;
         }
-        else if (hasBeenComment) {    // 希望可以把comment里的内容也加进output里，key="comment"     --聂博毅 2024.11.28
+        else if (hasBeenComment) {    // （已解决）希望可以把comment里的内容也加进output里，key="comment"     --聂博毅 2024.11.28
             dealWithComment(input, pos, peek);
         } else if (isLetter(peek)) {
             dealWithLetter(input, pos, peek, isInclude, filename);
