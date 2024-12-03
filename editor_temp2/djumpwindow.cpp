@@ -6,35 +6,36 @@
 
 
 DJumpWindow::DJumpWindow(QWidget *parent)
-    : QWidget(parent)
+    : QDialog(parent)
 {
     this->setWindowTitle("Jump to Specific Line");
-    this->setFixedSize(200, 100);
-    this->m_parent = parent;
+    this->setFixedSize(400, 200);
 
     QLabel* promptLabel = new QLabel(this);
     promptLabel->setText("Jump to line: ");
-    promptLabel->move(50, 20);
+    promptLabel->move(100, 40);
 
     QLineEdit* inputLine = new QLineEdit(this);
-    inputLine->resize(40, 20);
-    inputLine->move(100, 20);
+    inputLine->resize(80, 40);
+    inputLine->move(200, 40);
     this->m_inputLine = inputLine;
 
-    QPushButton* btnConfirm = new QPushButton(this);
-    btnConfirm->move(80, 80);
-    // connect(btnConfirm, &QPushButton::pressed, this, &DJumpWindow::getInput);
-    QPushButton* btnCancel = new QPushButton(this);
-    btnCancel->move(140, 80);
+    QPushButton* btnConfirm = new QPushButton("Confirm", this);
+    btnConfirm->move(70, 160);
+    connect(btnConfirm, &QPushButton::pressed, this, &DJumpWindow::getInput);
+
+    QPushButton* btnCancel = new QPushButton("Cancel", this);
+    btnCancel->move(270, 160);
+    connect(btnCancel, &QPushButton::pressed, this, &DJumpWindow::cancelWindow);
 
 
     QTextBrowser* infoBrowser = new QTextBrowser(this);
-    infoBrowser->resize(160, 20);
-    infoBrowser->move(20, 50);
+    infoBrowser->resize(320, 40);
+    infoBrowser->move(40, 100);
     infoBrowser->setPlainText("Please input a line number to jump to.");
     this->m_infoBrowser = infoBrowser;
 
-    this->hide();
+    // this->hide();
 
 }
 
@@ -54,5 +55,13 @@ void DJumpWindow::getInput()
     }
     int lineNum = std::atoi(userInput);
     // 发一个信号（传递lineNum）
+    emit sendLineNum(lineNum);
+    this->~DJumpWindow();
 
+}
+
+
+void DJumpWindow::cancelWindow()
+{
+    this->~DJumpWindow();
 }

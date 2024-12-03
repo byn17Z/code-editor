@@ -10,7 +10,6 @@ public:
 	User(std::string filename) : debug(filename) {
 		debug.run();
 	}
-	~User() {}
 	std::pair<VT, int> show() {
 		VT vt = debug.result.getstep(step);
 		int line = debug.nowline[step];

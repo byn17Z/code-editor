@@ -87,5 +87,3 @@ VT VTs::getstep(int line){
 int VTs::size() {
 	return sz;
 }
-
-

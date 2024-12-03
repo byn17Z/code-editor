@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <QTextEdit>
 #include <queue>
+#include <deque>
 #include <string>
 
 // 用户每次输入文本时 触发槽函数slot: updateTextEditor以：
@@ -24,6 +25,13 @@ public:
 
 
 public slots:
+    void pushUndo(QString qstr);
+
+    void pushRedo(QString qstr);
+
+    void undo();
+
+    void redo();
 
     void refreshEditor();
 
@@ -31,8 +39,12 @@ public slots:
 
 
 private:
-    // MEMBER VARIABLE for undoQueue
-    std::queue<QString> m_undoQueue;
+    std::deque<QString> m_undoDeque;
+    std::deque<QString> m_redoDeque;
+
+    QString m_cText = "";
+
+    bool m_isUndoRedoWork = 0;
 
     // 撤回次数
     int m_undoTimes = 5;

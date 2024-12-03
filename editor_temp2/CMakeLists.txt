@@ -27,6 +27,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         mytexteditor.h mytexteditor.cpp
         mydebugger.h mydebugger.cpp
         djumpwindow.h djumpwindow.cpp
+
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET untitled APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -80,3 +81,11 @@ target_include_directories(Editor PUBLIC
     "${PROJECT_BINARY_DIR}"
     "${PROJECT_SOURCE_DIR}/Debugger"
 )
+
+add_subdirectory(Lexical)
+target_link_libraries(Editor PUBLIC Lexical)
+target_include_directories(Editor PUBLIC
+    "${PROJECT_BINARY_DIR}"
+    "${PROJECT_SOURCE_DIR}/Lexical"
+)
+

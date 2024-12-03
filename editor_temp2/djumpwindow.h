@@ -2,11 +2,14 @@
 #define DJUMPWINDOW_H
 
 #include <QWidget>
+#include <QDialog>
 #include <QLineEdit>
 #include <QTextBrowser>
 
-class DJumpWindow: public QWidget
+class DJumpWindow: public QDialog
 {
+    Q_OBJECT
+
 public:
     DJumpWindow(QWidget *parent = nullptr);
     ~DJumpWindow();
@@ -14,13 +17,16 @@ public:
 
 public slots:
     void getInput();
-    // void cancelWindow();
+    void cancelWindow();
+
+
+signals:
+    void sendLineNum(int a);
 
 
 private:
     QLineEdit* m_inputLine;
     QTextBrowser* m_infoBrowser;
-    QWidget* m_parent;
 
 };
 

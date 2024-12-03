@@ -63,6 +63,7 @@ public slots:
     void debugSlot();
     void dNextSlot();
     void dPreSlot();
+    void recvLineNumJump(int a);
     void dJumpSlot();
     void dTmnSlot();
 

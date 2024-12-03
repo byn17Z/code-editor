@@ -279,7 +279,7 @@ vector<pair<string, string> > gettoken(string filename) {
     int l = 0;
     file.open(filename.c_str());
     if (!file.is_open()) {
-        cerr << "Error opening file: " << filename << endl;
+        // cerr << "Error opening file: " << filename << endl;
         return {};
     }
     while (getline(file, line)) {

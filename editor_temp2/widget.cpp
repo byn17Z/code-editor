@@ -28,6 +28,11 @@ Widget::Widget(QWidget *parent)
 
 
 
+    // set edit area
+    // MyTextEditor *textEditor = new MyTextEditor(this);
+    this->m_myEditor = new MyTextEditor(this);
+
+
 
     // set tool bar
     QMenuBar* myBar = new QMenuBar(this);
@@ -59,6 +64,15 @@ Widget::Widget(QWidget *parent)
         QMenu* menuEdit = new QMenu("Edit", myBar);
         myBar->addMenu(menuEdit);
 
+            QAction* actUndo = new QAction("Undo", this);
+            menuEdit->addAction(actUndo);
+            connect(actUndo, &QAction::triggered, this->m_myEditor, &MyTextEditor::undo);
+
+            QAction* actRedo = new QAction("Redo", this);
+            menuEdit->addAction(actRedo);
+            connect(actRedo, &QAction::triggered, this->m_myEditor, &MyTextEditor::redo);
+
+
         QMenu* menuDebug = new QMenu("Debug", myBar);
         myBar->addMenu(menuDebug);
 
@@ -77,7 +91,7 @@ Widget::Widget(QWidget *parent)
 
             QAction* actDJump = new QAction("Jump", this);
             menuDebug->addAction(actDJump);
-            // connect(actDJump, &QAction::triggered, this, &Widget::dJumpSlot);
+            connect(actDJump, &QAction::triggered, this, &Widget::dJumpSlot);
 
             QAction* actDTmn = new QAction("Terminate", this);
             menuDebug->addAction(actDTmn);
@@ -89,11 +103,6 @@ Widget::Widget(QWidget *parent)
 
     QPushButton* btnRefresh = new QPushButton("Refresh", this);
     btnRefresh->move(450, 0);
-
-
-    // set edit area
-    // MyTextEditor *textEditor = new MyTextEditor(this);
-    this->m_myEditor = new MyTextEditor(this);
 
     connect(btnRefresh, &QAbstractButton::pressed, this->m_myEditor, &MyTextEditor::refreshEditor);
 
@@ -537,6 +546,17 @@ void Widget::dPreSlot()
 
 
 //actDJump
+void Widget::recvLineNumJump(int a)
+{
+    bool isPreSuccess = this->m_myDebugger->jump(a);
+    if (isPreSuccess) {
+        this->updateDebuggerInfo();
+    }
+    else {
+        this->m_myTerminal->append("invalid jump");
+    }
+}
+
 void Widget::dJumpSlot()
 {
     if (m_isDebuggerOn == 0) {
@@ -544,11 +564,14 @@ void Widget::dJumpSlot()
         return;
     }
 
-    // this->m_myEditor->setReadOnly(1);
+    this->m_myEditor->setReadOnly(1);
     // this->m_dJumpWin->show();
 
-    // DJumpWindow* dJumpWin = new DJumpWindow(this);
-    // dJumWin->show();
+    DJumpWindow* dJumpWin = new DJumpWindow(this);
+    connect(dJumpWin, &DJumpWindow::sendLineNum, this, &Widget::recvLineNumJump);
+    qDebug() << "after connect DJumpWin";
+    dJumpWin->exec();
+    qDebug() << "after exec DJumpWin";
 }
 
 

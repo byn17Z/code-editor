@@ -1,6 +1,7 @@
 
 #include "mytexteditor.h"
 #include <string>
+#include <QTextCursor>
 
 MyTextEditor::MyTextEditor(QWidget *parent)
     : QTextEdit(parent)
@@ -8,9 +9,10 @@ MyTextEditor::MyTextEditor(QWidget *parent)
     this->resize(800, 350);
     this->move(50, 50);
 
-
-
-    this->m_undoQueue.push("");
+    std::deque<QString> undoDeque{};
+    this->m_undoDeque = undoDeque;
+    std::deque<QString> redoDeque{};
+    this->m_redoDeque = redoDeque;
 
     // 输入文本 -> 触发slot: updateTextEditor
     connect(this, &QTextEdit::textChanged, this, &MyTextEditor::refreshEditor);
@@ -20,17 +22,85 @@ MyTextEditor::MyTextEditor(QWidget *parent)
 
 
 
+// 堆撤回
+void MyTextEditor::pushUndo(QString qstr)
+{
+    if (this->m_undoDeque.size() == this->m_undoTimes) {
+        this->m_undoDeque.pop_front();
+        this->m_undoDeque.push_back(qstr);
+        return;
+    }   // 控制容量
 
-// // READ FUNCTION for private m_undoTimes
-// int MyTextEditor::undoTimes() {
-//     return this->m_undoTimes;
-// }
+    this->m_undoDeque.push_back(qstr);
+}
 
-// // WRITE FUNCTION for private m_undoTimes
-// void MyTextEditor::setUndoTimes(int newTimes) {
-//     this->m_undoTimes = newTimes;
-// }
 
+
+// 堆重做
+void MyTextEditor::pushRedo(QString qstr)
+{
+    if (this->m_redoDeque.size() == this->m_undoTimes) {
+        this->m_redoDeque.pop_front();
+        this->m_redoDeque.push_back(qstr);
+        return;
+    }   // 控制容量
+
+    this->m_redoDeque.push_back(qstr);
+}
+
+
+
+// 撤回
+void MyTextEditor::undo()
+{
+    this->QTextEdit::setReadOnly(1);
+    this->m_isUndoRedoWork = 1;
+
+    if (!this->m_undoDeque.empty()) {
+        // qDebug() << "undo start";
+
+        // 堆重做：当前文本
+        this->pushRedo(this->QTextEdit::toPlainText());
+
+        // 展示：撤回后的文本
+        this->QTextEdit::setPlainText(this->m_undoDeque.back());
+
+        // 回溯
+        this->m_undoDeque.pop_back();
+
+        // qDebug() << "undo end" << "\n";
+    }
+
+    this->m_isUndoRedoWork = 0;
+    this->QTextEdit::setReadOnly(0);
+}
+
+
+
+// 重做
+void MyTextEditor::redo()
+{
+    this->QTextEdit::setReadOnly(1);
+    this->m_isUndoRedoWork = 1;
+
+    if (!this->m_redoDeque.empty()) {
+        // qDebug() << "redo start";
+
+        // 堆撤回：当前文本
+        this->pushUndo(this->QTextEdit::toPlainText());
+
+        // 展示：重做后的文本
+        this->QTextEdit::setPlainText(this->m_redoDeque.back());
+
+        // 回溯
+        this->m_redoDeque.pop_back();
+
+        // qDebug() << "redo end" << "\n";
+    }
+
+    this->m_isUndoRedoWork = 0;
+    this->QTextEdit::setReadOnly(0);
+}
 
 
 
@@ -51,30 +121,44 @@ void MyTextEditor::refreshEditor()
     // qDebug() << newText;    // test
     // newText.append("->HelloWorld"); // test
 
-
-    // 若没有改变内容则跳过 -> 跳出setPlainText函数引发的循环
-    if (newText == this->m_undoQueue.back()) {
-        // qDebug() << ":no change";   // test
-    }
     // 若用户改变内容
-    else{
+    if (this->m_undoDeque.empty() || newText != this->m_cText){
         // this->QTextEdit::clear();
 
-        // 更新undoQueue
-        // qDebug() << "before push";  // test
-        this->m_undoQueue.push(newText);
-        // qDebug() << "after push";   // test
-        if (this->m_undoQueue.size() > this->m_undoTimes) {
-            this->m_undoQueue.pop();
-        }   // 控制undoQueue容量
+        // qDebug() << "before reset undo/redo";  // test
+        // qDebug() << "old text: " << this->m_cText;
+
+        if (!this->m_isUndoRedoWork) {
+            this->pushUndo(this->m_cText);    // 更新undoDeque
+            this->m_redoDeque.clear();  // 清空redoDeque
+        }
+
+        this->m_cText = newText;
+        // qDebug() << "new text: " << this->m_cText;
+        // qDebug() << "after reset undo/redo";   // test
 
         std::string strText = newText.QString::toStdString();   // 转换为string供lexer/debugger使用
+
+        // 记录光标位置
+        QTextCursor cursor = this->textCursor();
+        int cursorPos = cursor.position();
+        // qDebug() << "current cursor position: " << cursorPos;
 
         // 展示更新后的文本
         // qDebug() << "before set";   // test
         this->QTextEdit::setPlainText(newText);
         // qDebug() << "after set";    // test
-        // qDebug() << newText;    // test
+        // qDebug() << "new text: " << newText;    // test
+
+        // 还原光标位置
+        cursor.setPosition(cursorPos);
+        this->setTextCursor(cursor);
+        // qDebug() << "reset cursor: " << this->textCursor().position();
+    }
+
+    // 若没有改变内容则跳过 -> 跳出setPlainText函数引发的循环
+    else {
+        // qDebug() << ":no change";   // test
     }
 
     this->QTextEdit::setReadOnly(0);
