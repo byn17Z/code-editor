@@ -349,7 +349,7 @@ void dealWithChar(string&input, int&pos, char peek) {
         }
     }
 
-    if (pos == input.size() || input[pos + 2] != '\'' || pos + 2 < input.length()) {        // （已解决）pos+2好像可能超出index？（以及words函数里while条件好像已经保证了pos<input.size()？只是顺便提一嘴）    --聂博毅 2024.11.28
+    if (pos == input.size() || input[pos + 2] != '\'' || pos + 2 > input.length()) {        // （已解决）pos+2好像可能超出index？（以及words函数里while条件好像已经保证了pos<input.size()？只是顺便提一嘴）    --聂博毅 2024.11.28
         string message = "There cannot be two characters in a char. ";
         error(hasError, message, row);
         return;
