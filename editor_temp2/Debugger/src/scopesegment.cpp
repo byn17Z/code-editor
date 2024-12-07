@@ -4,7 +4,7 @@
 
 ScopeSegment::ScopeSegment(std::string filename){
 	scopes = findALLscope(filename);
-	tokens = gettoken(filename);
+	tokens = DB::gettoken(filename);
 
 	allloop= findloops();
 	allif = findifs();

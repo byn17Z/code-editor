@@ -15,6 +15,7 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QLabel>
+# include <QProcess>
 
 
 //CONSTRUCTOR
@@ -43,22 +44,27 @@ Widget::Widget(QWidget *parent)
             QAction* actNew = new QAction("New", this);
             menuFile->addAction(actNew);
             connect(actNew, &QAction::triggered, this, &Widget::newSlot);
+            connect(this, &Widget::sendIsDebuggerOff, actNew, &QAction::setEnabled);
 
             QAction* actOpen = new QAction("Open", this);
             menuFile->addAction(actOpen);
             connect(actOpen, &QAction::triggered, this, &Widget::openSlot);
+            connect(this, &Widget::sendIsDebuggerOff, actOpen, &QAction::setEnabled);
 
             QAction* actSave = new QAction("Save", this);
             menuFile->addAction(actSave);
             connect(actSave, &QAction::triggered, this, &Widget::saveSlot);
+            connect(this, &Widget::sendIsDebuggerOff, actSave, &QAction::setEnabled);
 
             QAction* actSaveAs = new QAction("Save As", this);
             menuFile->addAction(actSaveAs);
             connect(actSaveAs, &QAction::triggered, this, &Widget::saveAsSlot);
+            connect(this, &Widget::sendIsDebuggerOff, actSaveAs, &QAction::setEnabled);
 
             QAction* actClose = new QAction("Close", this);
             menuFile->addAction(actClose);
             connect(actClose, &QAction::triggered, this, &Widget::closeSlot);
+            connect(this, &Widget::sendIsDebuggerOff, actClose, &QAction::setEnabled);
 
 
         QMenu* menuEdit = new QMenu("Edit", myBar);
@@ -67,10 +73,12 @@ Widget::Widget(QWidget *parent)
             QAction* actUndo = new QAction("Undo", this);
             menuEdit->addAction(actUndo);
             connect(actUndo, &QAction::triggered, this->m_myEditor, &MyTextEditor::undo);
+            connect(this, &Widget::sendIsDebuggerOff, actUndo, &QAction::setEnabled);
 
             QAction* actRedo = new QAction("Redo", this);
             menuEdit->addAction(actRedo);
             connect(actRedo, &QAction::triggered, this->m_myEditor, &MyTextEditor::redo);
+            connect(this, &Widget::sendIsDebuggerOff, actRedo, &QAction::setEnabled);
 
 
         QMenu* menuDebug = new QMenu("Debug", myBar);
@@ -79,26 +87,45 @@ Widget::Widget(QWidget *parent)
             QAction* actDebug = new QAction("Debug", this);
             menuDebug->addAction(actDebug);
             connect(actDebug, &QAction::triggered, this, &Widget::debugSlot);
-
+            connect(this, &Widget::sendIsDebuggerOff, actDebug, &QAction::setEnabled);
+            connect(this, &Widget::sendIsDebuggerOn, actDebug, &QAction::setEnabled);
 
             QAction* actDNext = new QAction("Next", this);
             menuDebug->addAction(actDNext);
+            actDNext->QAction::setEnabled(0);
             connect(actDNext, &QAction::triggered, this, &Widget::dNextSlot);
+            connect(this, &Widget::sendIsDebuggerOn, actDNext, &QAction::setEnabled);
 
             QAction* actDPre = new QAction("Previous", this);
             menuDebug->addAction(actDPre);
+            actDPre->QAction::setEnabled(0);
             connect(actDPre, &QAction::triggered, this, &Widget::dPreSlot);
+            connect(this, &Widget::sendIsDebuggerOn, actDPre, &QAction::setEnabled);
 
-            QAction* actDJump = new QAction("Jump", this);
+            QAction* actDJump = new QAction("Jump to...", this);
             menuDebug->addAction(actDJump);
+            actDJump->QAction::setEnabled(0);
             connect(actDJump, &QAction::triggered, this, &Widget::dJumpSlot);
+            connect(this, &Widget::sendIsDebuggerOn, actDJump, &QAction::setEnabled);
 
             QAction* actDTmn = new QAction("Terminate", this);
             menuDebug->addAction(actDTmn);
+            actDTmn->QAction::setEnabled(0);
             connect(actDTmn, &QAction::triggered, this, &Widget::dTmnSlot);
+            connect(this, &Widget::sendIsDebuggerOn, actDTmn, &QAction::setEnabled);
 
         QMenu* menuCompile = new QMenu("Compile", myBar);
         myBar->addMenu(menuCompile);
+
+            QAction* actCompile = new QAction("Compile", this);
+            menuCompile->addAction(actCompile);
+            // connect(actCompile, &QAction::triggered, this, &Widget::compileSlot);
+            connect(this, &Widget::sendIsDebuggerOff, actCompile, &QAction::setEnabled);
+
+            QAction* actRun = new QAction("Run", this);
+            menuCompile->addAction(actRun);
+            // connect(actRun, &QAction::triggered, this, &Widget::runSlot);
+            connect(this, &Widget::sendIsDebuggerOff, actRun, &QAction::setEnabled);
 
 
     QPushButton* btnRefresh = new QPushButton("Refresh", this);
@@ -128,79 +155,6 @@ Widget::Widget(QWidget *parent)
     statusBar->show();
     statusBar->showMessage("Ready", 1000);
 
-
-    // this->m_dJumpWin = new DJumpWindow(this);
-    // this->m_dJumpWin->hide();
-
-}
-
-
-
-
-//QPROPEERTY myEditor
-//READ - myEditor
-// MyTextEditor* Widget::myEditor()
-// {
-//     return this->m_myEditor;
-// }
-
-
-// //WRITE - myEditor
-// void Widget::setEditor(MyTextEditor* textEditor)
-// {
-//     this->m_myEditor = textEditor;
-// }
-
-
-//SIGNAL - myEditor
-// void Widget::myEditorChanged() {}
-
-
-
-
-//QPROPEERTY cFilePath
-// //READ - cFilePath
-// QString Widget::cFilePath()
-// {
-//     return this->m_cFilePath;
-// }
-
-
-// //WRITE - cFilePath
-// void Widget::setcFilePath(QString path)
-// {
-//     this->m_cFilePath = path;
-// }
-
-
-//SIGNAL - cFilePath
-// void cFilePathChanged() {}
-
-
-// //QPROPEERTY isCFileSaved
-// //READ - isCFileSaved
-// bool Widget::isCFileSaved()
-// {
-//     return this->m_isCFileSaved;
-// }
-
-
-// //WRITE - isCFileSaved
-// void Widget::setisCFileSaved()
-// {
-//     qDebug() << this->m_isCFileSaved;
-//     this->m_isCFileSaved = 0;
-// }
-
-
-// //SIGNAL - isCFileSaved
-// // void Widget::isCFileSavedChanged() {}
-
-
-// READ - m_myDebugger
-MyDebugger* Widget::myDebugger()
-{
-    return this->m_myDebugger;
 }
 
 
@@ -213,10 +167,10 @@ MyDebugger* Widget::myDebugger()
 //actNew 新建文件
 void Widget::newSlot()
 {
-    if (this->m_isDebuggerOn == 1) {
-        qDebug() << "not available: debugger on";
-        return;
-    }
+    // if (this->m_isDebuggerOn == 1) {
+    //     qDebug() << "not available: debugger on";
+    //     return;
+    // }
 
     // prompt用户选择新建路径
     QString fileName = QFileDialog::getSaveFileName(
@@ -248,11 +202,6 @@ void Widget::newSlot()
 //actOpen 打开文件
 void Widget::openSlot()
 {
-    if (this->m_isDebuggerOn == 1) {
-        qDebug() << "not available: debugger on";
-        return;
-    }
-
     // prompt用户选择文件
     QString fileName = QFileDialog::getOpenFileName(
         this,
@@ -287,11 +236,6 @@ void Widget::openSlot()
 //actSave 保存文件
 void Widget::saveSlot()
 {
-    if (this->m_isDebuggerOn == 1) {
-        qDebug() << "not available: debugger on";
-        return;
-    }
-
     // 未打开或创建文件时，跳转save as
     if (this->m_cFilePath.isEmpty()) {this->Widget::saveAsSlot();}
 
@@ -314,11 +258,6 @@ void Widget::saveSlot()
 //actSaveAs 另存为
 void Widget::saveAsSlot()
 {
-    if (this->m_isDebuggerOn == 1) {
-        qDebug() << "not available: debugger on";
-        return;
-    }
-
     // prompt用户选择保存路径
     QString fileName = QFileDialog::getSaveFileName(
         this,
@@ -358,11 +297,6 @@ void Widget::saveAsSlot()
 //actClose 关闭文件并清空窗口
 void Widget::closeSlot()
 {
-    if (this->m_isDebuggerOn == 1) {
-        qDebug() << "not available: debugger on";
-        return;
-    }
-
     // 未打开文件且内容为空时，直接关闭（跳过）
     if (this->m_cFilePath.isEmpty()) {
         if (this->m_myEditor->toPlainText().isEmpty()) {
@@ -474,12 +408,14 @@ void Widget::debugSlot()
 
     this->m_myEditor->setReadOnly(1);
 
-    if (m_isDebuggerOn == 1) {
-        qDebug() << "debugger restart";
-        this->m_myTerminal->clear();
-        this->m_myTerminal->setPlainText(this->m_cFilePath);
-    }
-    this->m_isDebuggerOn = 1;
+    // if (m_isDebuggerOn == 1) {
+    //     qDebug() << "debugger restart";
+    //     this->m_myTerminal->clear();
+    //     this->m_myTerminal->setPlainText(this->m_cFilePath);
+    // }
+    // this->m_isDebuggerOn = 1;
+    emit sendIsDebuggerOn(1);
+    emit sendIsDebuggerOff(0);
 
     qDebug() << "debugger start";
     qDebug() << "m_cFilePath: " << this->m_cFilePath;
@@ -502,10 +438,10 @@ void Widget::debugSlot()
 //actDNext
 void Widget::dNextSlot()
 {
-    if (m_isDebuggerOn == 0) {
-        qDebug() << "invalid \"next\" action";
-        return;
-    }
+    // if (m_isDebuggerOn == 0) {
+    //     qDebug() << "invalid \"next\" action";
+    //     return;
+    // }
 
     // this->m_myEditor->setReadOnly(1);
     qDebug() << "before next";
@@ -526,11 +462,6 @@ void Widget::dNextSlot()
 //actDPre
 void Widget::dPreSlot()
 {
-    if (m_isDebuggerOn == 0) {
-        qDebug() << "invalid \"previous\" action";
-        return;
-    }
-
     // this->m_myEditor->setReadOnly(1);
     qDebug() << "before pre";
     bool isPreSuccess = this->m_myDebugger->previous();
@@ -548,8 +479,8 @@ void Widget::dPreSlot()
 //actDJump
 void Widget::recvLineNumJump(int a)
 {
-    bool isPreSuccess = this->m_myDebugger->jump(a);
-    if (isPreSuccess) {
+    bool isJumpSuccess = this->m_myDebugger->jump(a);
+    if (isJumpSuccess) {
         this->updateDebuggerInfo();
     }
     else {
@@ -559,13 +490,7 @@ void Widget::recvLineNumJump(int a)
 
 void Widget::dJumpSlot()
 {
-    if (m_isDebuggerOn == 0) {
-        qDebug() << "invalid \"jump\" action";
-        return;
-    }
-
     this->m_myEditor->setReadOnly(1);
-    // this->m_dJumpWin->show();
 
     DJumpWindow* dJumpWin = new DJumpWindow(this);
     connect(dJumpWin, &DJumpWindow::sendLineNum, this, &Widget::recvLineNumJump);
@@ -578,10 +503,10 @@ void Widget::dJumpSlot()
 //actDTmn
 void Widget::dTmnSlot()
 {
-    if (m_isDebuggerOn == 0) {
-        qDebug() << "invalid \"Terminate\" action";
-        return;
-    }
+    // if (m_isDebuggerOn == 0) {
+    //     qDebug() << "invalid \"Terminate\" action";
+    //     return;
+    // }
 
     this->m_myDebugger->User::~User();
     this->m_myDebugger = NULL;
@@ -591,10 +516,42 @@ void Widget::dTmnSlot()
     this->m_myTerminal->clear();
     this->m_myTerminal->setPlainText(this->m_cFilePath);
 
-    this->m_isDebuggerOn = 0;
+    // this->m_isDebuggerOn = 0;
+    emit sendIsDebuggerOn(0);
+    emit sendIsDebuggerOff(1);
     qDebug() << "debugger off";
     this->m_myEditor->setReadOnly(0);
 }
+
+
+
+
+// Menu: Compile
+// actCompile
+void Widget::compileSlot()
+{
+    if (this->m_exePath.isEmpty()) {
+        // prompt用户选择生成可执行文件的路径
+        QString fileName = QFileDialog::getSaveFileName(
+            this,
+            "choose a path for executable",
+            QCoreApplication::applicationFilePath());
+
+        if (fileName.isEmpty()) {return;}
+        else {
+            qDebug() << "create executable in: " << fileName;
+            this->m_exePath = fileName;
+
+            // call compiler
+            ////////////////
+        }
+    }
+    else {
+        // call compiler
+        ////////////////
+    }
+}
+void Widget::runSlot() {}
 
 
 //DECONSTRUCTOR

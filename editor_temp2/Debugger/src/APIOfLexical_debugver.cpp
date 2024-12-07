@@ -11,17 +11,17 @@
 #include <utility>
 using namespace std;
 
-bool hasBeenComment = false;
-vector<pair<string, string> > output;
+bool hasBeenCommentd = false;
+vector<pair<string, string> > outputd;
 
-void getpair(string first, string second) {
+void DB::getpair(string first, string second) {
     pair<string, string> answer;
     answer.first = first;
     answer.second = second;
-    output.push_back(answer);
+    outputd.push_back(answer);
 }
 
-string keyWord[26] = { "void", "int", "char", "float", "double", "bool", "string" \
+string keyWordd[26] = { "void", "int", "char", "float", "double", "bool", "string" \
                    "long", "short", "signed", "unsigned",\
                    "const", "inline",\
                    "for", "while", "if", "else",\
@@ -29,20 +29,20 @@ string keyWord[26] = { "void", "int", "char", "float", "double", "bool", "string
                    "main", "include",\
                    "struct",\
                    "std" };
-char whitespace[] = { ' ', '\t', '\n', '\r' };
+char whitespaced[] = { ' ', '\t', '\n', '\r' };
 
 //There is only one single operator, '~'
-char doubleOperator[] = { '+', '-', '*', '/', '%', '=', '!', '>', '<', '&', '|', '^' };
+char doubleOperatord[] = { '+', '-', '*', '/', '%', '=', '!', '>', '<', '&', '|', '^' };
 
 //There are two others: ' and ", cannot be written in the array
-char delimiter[] = { '(', ')', '[', ']', '{', '}', ',', ';', '?', '#', ':' };
+char delimiterd[] = { '(', ')', '[', ']', '{', '}', ',', ';', '?', '#', ':' };
 
 
 
 // Declare the position and peek of the dealing input
-bool isKeyWord(string word) {
+bool DB::isKeyWord(string word) {
     for (int i = 0; i < 26; i++) {
-        if (word == keyWord[i]) {
+        if (word == keyWordd[i]) {
             return true;
         }
     }
@@ -50,7 +50,7 @@ bool isKeyWord(string word) {
     return false;
 }
 
-bool isComment(string& input, int pos, char peek, bool& hasBeenComment) {
+bool DB::isComment(string& input, int pos, char peek, bool& hasBeenCommentd) {
 	if (pos >= input.size() - 1) {
 		return false;
 	}
@@ -63,13 +63,13 @@ bool isComment(string& input, int pos, char peek, bool& hasBeenComment) {
     else if (peek == '/' && next == '*') {
 
         if (!(last == '/' && ll == '*')) {
-            hasBeenComment == true;
+            hasBeenCommentd == true;
         }
         return true;
     }
-    else if (hasBeenComment) {
+    else if (hasBeenCommentd) {
         if (last == '/' && ll == '*') {
-            hasBeenComment = false;
+            hasBeenCommentd = false;
         }
         return true;
     }
@@ -77,16 +77,16 @@ bool isComment(string& input, int pos, char peek, bool& hasBeenComment) {
     return false;
 }
 
-bool isWhiteSpace(char ch) {
+bool DB::isWhiteSpace(char ch) {
     for (int i = 0; i < 4; i++) {
-        if (ch == whitespace[i]) {
+        if (ch == whitespaced[i]) {
             return true;
         }
     }
     return false;
 }
 
-bool isLetter(char ch) {
+bool DB::isLetter(char ch) {
 	if (ch == '.') {
 		return true;
 	}
@@ -103,43 +103,43 @@ bool isLetter(char ch) {
 
 }
 
-bool isDigit(char ch) {
+bool DB::isDigit(char ch) {
     return (ch >= '0' && ch <= '9');
 }
 
-bool isOperator(char ch) {
+bool DB::isOperator(char ch) {
     if (ch == '~') {
         return true;
     }
 
     for (int i = 0; i < 12; i++) {
-        if (ch == doubleOperator[i]) {
+        if (ch == doubleOperatord[i]) {
             return true;
         }
     }
     return false;
 }
 
-bool isDelimiter(char ch) {
+bool DB::isDelimiter(char ch) {
     for (int i = 0; i < 11; i++) {
-        if (ch == delimiter[i]) {
+        if (ch == delimiterd[i]) {
             return true;
         }
     }
     return false;
 }
 
-bool isString(char ch) {
+bool DB::isString(char ch) {
     return (ch == '"');
 }
 
-bool isChar(char ch) {
+bool DB::isChar(char ch) {
     return (ch == '\'');
 }
 
 
 
-void dealWithLetter(string& input, int& pos, char peek) {
+void DB::dealWithLetter(string& input, int& pos, char peek) {
     string str = "";
     while (isLetter(peek) || isDigit(peek)) {
         if (pos >= input.length()) {
@@ -165,7 +165,7 @@ void dealWithLetter(string& input, int& pos, char peek) {
 
 }
 
-void dealWithDigit(string& input, int& pos, char peek) {
+void DB::dealWithDigit(string& input, int& pos, char peek) {
     string str = "";
     string type = "int";
     while (isDigit(peek) || peek == '.') {
@@ -182,7 +182,7 @@ void dealWithDigit(string& input, int& pos, char peek) {
     getpair("NUM", str);
 }
 
-void dealWithOperator(string& input, int& pos, char peek) {
+void DB::dealWithOperator(string& input, int& pos, char peek) {
     string str = "";
     str += peek;
     if (peek == '~' || pos >= input.length()) {
@@ -210,14 +210,14 @@ void dealWithOperator(string& input, int& pos, char peek) {
     return;
 }
 
-void dealWithDelimiter(int& pos, char peek) {
+void DB::dealWithDelimiter(int& pos, char peek) {
     pos += 1;
     string str = "";
     str += peek;
     getpair("SEP", str);
 }
 
-void dealWithString(string& input, int& pos, char peek) {
+void DB::dealWithString(string& input, int& pos, char peek) {
     string str = "";
     pos++;
     peek = input[pos];
@@ -230,7 +230,7 @@ void dealWithString(string& input, int& pos, char peek) {
     getpair("STR", str);
 }
 
-void dealWithChar(string& input, int& pos, char peek) {
+void DB::dealWithChar(string& input, int& pos, char peek) {
     string str = "";
     str += input[pos + 1];
     pos += 3;
@@ -238,7 +238,7 @@ void dealWithChar(string& input, int& pos, char peek) {
 }
 
 
-void words(string input, bool& hasBeenComment) {
+void DB::words(string input, bool& hasBeenCommentd) {
     if (input.length() == 0) {
         return;
     }
@@ -249,7 +249,7 @@ void words(string input, bool& hasBeenComment) {
     while (pos <= input.length() - 1) {
         peek = input[pos];
         if (isWhiteSpace(peek)) { pos += 1; }
-        else if (isComment(input, pos, peek, hasBeenComment)) {
+        else if (isComment(input, pos, peek, hasBeenCommentd)) {
             return;
         }
         else if (isLetter(peek)) {
@@ -273,7 +273,7 @@ void words(string input, bool& hasBeenComment) {
     }
 }
 
-vector<pair<string, string> > gettoken(string filename) {
+vector<pair<string, string> > DB::gettoken(string filename) {
     fstream file;
     string line;
     int l = 0;
@@ -284,8 +284,8 @@ vector<pair<string, string> > gettoken(string filename) {
     }
     while (getline(file, line)) {
         getpair("startofline", to_string(++l));
-        words(line, hasBeenComment);
+        words(line, hasBeenCommentd);
     }
     file.close();
-    return output;
+    return outputd;
 }

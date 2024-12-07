@@ -7,21 +7,21 @@
 
 const unordered_set<string> typeword = { "void", "int", "char", "float", "double", "bool", "string", "long", "short", "signed", "unsigned" };
 
-//ÕÒµ½×÷ÓÃÓòµÄÖÕÖ¹Î»ÖÃ
+//ï¿½Òµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¹Î»ï¿½ï¿½
 int pairing(vector<pair<string, string> > tokens, int start,int n) {
 	int line = -1;
 	stack<string> s;
 	int i = start;
-	//Èç¹ûÊÇĞÎÈçfor() balabala;
-	//»òfor()
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½for() balabala;
+	//ï¿½ï¿½for()
 	//		balabala;
-	//ÕâÖÖ²»´ø´óÀ¨ºÅµÄ×÷ÓÃÓò
+	//ï¿½ï¿½ï¿½Ö²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Åµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	while (tokens[i].second != "{") {
 		if (i < n - 1 && tokens[i].first == "startofline" && tokens[i + 1].second != "{") {
-			if (tokens[i - 1].second != ";") { //·µ»ØÏÂÒ»ĞĞµÄĞĞºÅ
+			if (tokens[i - 1].second != ";") { //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½Ğµï¿½ï¿½Ğºï¿½
 				return stoi(tokens[i].second);
 			}
-			else //»ò·µ»Ø±¾ĞĞµÄĞĞºÅ
+			else //ï¿½ò·µ»Ø±ï¿½ï¿½Ğµï¿½ï¿½Ğºï¿½
 				return stoi(tokens[i].second) - 1;
 		}
 		i++;
@@ -46,7 +46,7 @@ int pairing(vector<pair<string, string> > tokens, int start,int n) {
 	return line;
 }
 
-//ÕÒµ½ËùÓĞµÄº¯ÊıÃû³Æ
+//ï¿½Òµï¿½ï¿½ï¿½ï¿½ĞµÄºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 unordered_set<string> findfuns(vector<pair<string, string> > tokens,int n) {
 	unordered_set<string> functionnames;
 	for (int i = 0; i < n; i++) {
@@ -87,7 +87,7 @@ unordered_set<string> findstructs(vector<pair<string, string> > tokens, int n) {
 	return structnames;
 }
 
-//ÕÒµ½ËùÓĞµÄ×÷ÓÃÓò
+//ï¿½Òµï¿½ï¿½ï¿½ï¿½Ğµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 vector<pair<string, int> > findallscope(vector<pair<string, string> > tokens, unordered_set<string> functionname, unordered_set<string> structname, int n) {
 	int currentline = 0;
 	vector<pair<string, int> > result;
@@ -127,9 +127,9 @@ vector<pair<string, int> > findallscope(vector<pair<string, string> > tokens, un
 	return result;
 }
 
-//½«×÷ÓÃÓò°´ĞĞºÅÅÅĞò 
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğºï¿½ï¿½ï¿½ï¿½ï¿½ 
 vector<pair<string, int> > findALLscope(string filename) {
-	vector<pair<string, string> > tokens = gettoken(filename);
+	vector<pair<string, string> > tokens = DB::gettoken(filename);
 	int n = tokens.size();
 	unordered_set<string> functionname = findfuns(tokens,n);
 	unordered_set<string> structname = findstructs(tokens, n);

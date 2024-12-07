@@ -11,11 +11,11 @@ class VT{
 	std::vector<std::array<std::string,4>> table;
 	
     VT(){}
-	void add(std::array<std::string,4>& v); //¼ÓÈëÒ»ĞĞ±äÁ¿ĞÅÏ¢ 
-	void add(std::array<std::string, 2>& v); //ĞŞ¸ÄÒ»ĞĞ±äÁ¿ĞÅÏ¢
-	void del(const std::string& scope); // É¾³ıÄ³¸ö×÷ÓÃÓòÄÚµÄ±äÁ¿ 
+	void add(std::array<std::string,4>& v); //ï¿½ï¿½ï¿½ï¿½Ò»ï¿½Ğ±ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ 
+	void add(std::array<std::string, 2>& v); //ï¿½Ş¸ï¿½Ò»ï¿½Ğ±ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+	void del(const std::string& scope); // É¾ï¿½ï¿½Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÚµÄ±ï¿½ï¿½ï¿½ 
 	std::array<std::string, 4> get(const std::string& variable) const;
-	VT& operator=(const VT& other); // ÖØÔØ¸³ÖµÔËËã·û
+	VT& operator=(const VT& other); // ï¿½ï¿½ï¿½Ø¸ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½
 };
 
 class VTs{
@@ -24,9 +24,9 @@ class VTs{
 	int sz = 0;
 	
 	VTs();
-	void setstep(int line,VT vt); //½«µÚline²½µÄ×´Ì¬ÉèÖÃÎªvt 
-	VT getstep(int line); //»ñÈ¡µÚline²½µÄVT 
-	int size(); //»ñÈ¡VTsµÄ´óĞ¡
+	void setstep(int line,VT vt); //ï¿½ï¿½ï¿½ï¿½lineï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½ï¿½ï¿½Îªvt 
+	VT getstep(int line); //ï¿½ï¿½È¡ï¿½ï¿½lineï¿½ï¿½ï¿½ï¿½VT 
+	int size(); //ï¿½ï¿½È¡VTsï¿½Ä´ï¿½Ğ¡
 };
 
 #endif

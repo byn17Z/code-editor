@@ -8,7 +8,7 @@
 #include <unordered_set>
 #include <stack>
 
-//½¨Òé²»Òª¿´¾ßÌåÊµÏÖ£¬ÒòÎª±¾ÈËÒ²¿´²»ÏÂÈ¥£¬µ«ÎªÁËÈÃ×Ô¼º¿´¶®»¹ÊÇ¼ÓÉÏÁË×¢ÊÍ
+//ï¿½ï¿½ï¿½é²»Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½Ö£ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½Ò²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¥ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¼ï¿½ï¿½ï¿½ï¿½ï¿½×¢ï¿½ï¿½
 
 const unordered_set<string> typeword = { "void", "int", "char", "float", "double", "bool", "string", "long", "short", "signed", "unsigned" };
 
@@ -45,8 +45,8 @@ const unordered_set<string> typeword = { "void", "int", "char", "float", "double
 		return result;
 	}
 
-	//Íü¼Ç¸ÉÂïµÄÁË£¬ÍòÒ»ÓĞÓÃ£¬ÏÈÁô×Å
-	//11.10 ÎÒÏëÆğÀ´ÁË£¬Õâ¸öº¯ÊıÊÇÓÃÀ´ÕÒ¾ßÌåÊÇÄÄÖÖÀàĞÍµÄscopeµÄ
+	//ï¿½ï¿½ï¿½Ç¸ï¿½ï¿½ï¿½ï¿½ï¿½Ë£ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	//11.10 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Íµï¿½scopeï¿½ï¿½
 
 	pair<string, int> Debug::find(vector<pair<string, int>> scopes, int line) {
 		for (int i = 0; i < scopes.size(); i++) {
@@ -63,7 +63,7 @@ const unordered_set<string> typeword = { "void", "int", "char", "float", "double
 		}
 		return false;
 	}
-	//Ö´ĞĞÄ³¸öº¯Êı¿é£¬´Ó×óµ½ÓÒÒÀ´ÎÊÇ£º×Ü±äÁ¿±í£¬µ÷ÓÃº¯ÊıÊ±µÄ±äÁ¿±í£¬ÒªÖ´ĞĞµÄº¯ÊıÃû£¬²ÎÊıÁĞ±í£¬×ÜĞÅÏ¢£¬Ô´ÎÄ¼ş
+	//Ö´ï¿½ï¿½Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç£ï¿½ï¿½Ü±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ãºï¿½ï¿½ï¿½Ê±ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÒªÖ´ï¿½ĞµÄºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Ô´ï¿½Ä¼ï¿½
 
 	std::string Debug::executefunction(VT& current, const std::string& functionname, const std::vector<string>& valuesofparameters) {
 		int startline=-1, endline=-1;
@@ -149,16 +149,16 @@ const unordered_set<string> typeword = { "void", "int", "char", "float", "double
 				return to_string(value.first);
 			}
 
-			//ÒÔÏÂÊÇ´¦Àí¼òµ¥Óï¾ä
+			//ï¿½ï¿½ï¿½ï¿½ï¿½Ç´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-			if (flag.second == -1) { //Ì«ºÃÁË£¬ÕâÖ»ÊÇ¸öÆÕÍ¨Óï¾ä
+			if (flag.second == -1) { //Ì«ï¿½ï¿½ï¿½Ë£ï¿½ï¿½ï¿½Ö»ï¿½Ç¸ï¿½ï¿½ï¿½Í¨ï¿½ï¿½ï¿½
 
-				if (token[0].first == "KeyWord"&&typeword.contains(token[0].second)) { //ÕâÊÇ¸öÉùÃ÷Óï¾ä
+				if (token[0].first == "KeyWord"&&typeword.contains(token[0].second)) { //ï¿½ï¿½ï¿½Ç¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 					std::string type = token[0].second;
-					for (int j = 1; j<token.size(); j++) { //´¦ÀíÃ¿¸ö±äÁ¿
+					for (int j = 1; j<token.size(); j++) { //ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 						std::string variable;
 						std::string expression;
-						if (token[j].second == "=") { //Õâ¸ö±äÁ¿ÓĞ³õÊ¼»¯
+						if (token[j].second == "=") { //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ³ï¿½Ê¼ï¿½ï¿½
 							variable = token[j - 1].second;
 							int k;
 							int stk = 0;
@@ -176,14 +176,14 @@ const unordered_set<string> typeword = { "void", "int", "char", "float", "double
 							array<string,4> addment = { scope.top(), type, variable, std::to_string(value.first) };
 							temp.add(addment);
 						}
-						else if (j<token.size()&&(token[j].second == ","|| token[j].second == ";") &&token[j-1].first=="IDEN") { //Õâ¸ö±äÁ¿Ã»ÓĞ³õÊ¼»¯
+						else if (j<token.size()&&(token[j].second == ","|| token[j].second == ";") &&token[j-1].first=="IDEN") { //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½Ğ³ï¿½Ê¼ï¿½ï¿½
 							variable = token[j - 1].second;
 							array<string,4> addment = { scope.top(), type, variable, "" };
 							temp.add(addment);
 						}
 					}
 				}
-				else if (strnames.contains(token[0].second)) { //ÕâÊÇ¸ö½á¹¹ÌåÉùÃ÷
+				else if (strnames.contains(token[0].second)) { //ï¿½ï¿½ï¿½Ç¸ï¿½ï¿½á¹¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 					string structname = token[0].second;
 					strs thisstr;
 					for (int j = 0; j < information.allstruct.size(); j++) {
@@ -192,9 +192,9 @@ const unordered_set<string> typeword = { "void", "int", "char", "float", "double
 							break;
 						}
 					}
-					for (int j = 1; j < token.size(); j++) { //´¦ÀíÃ¿¸ö±äÁ¿
+					for (int j = 1; j < token.size(); j++) { //ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 						std::string variable;
-						if (token[j].second == "=") { //Õâ¸ö±äÁ¿ÓĞ³õÊ¼»¯
+						if (token[j].second == "=") { //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ³ï¿½Ê¼ï¿½ï¿½
 							variable = token[j - 1].second;
 							array<string, 4> addment = { scope.top(), token[0].second, variable, "As follows"};
 							temp.add(addment);
@@ -235,7 +235,7 @@ const unordered_set<string> typeword = { "void", "int", "char", "float", "double
 								temp.add(addment);
 							}
 						}
-						else if (j < token.size() && (token[j].second == "," || token[j].second == ";") && token[j - 1].first == "IDEN") { //Õâ¸ö±äÁ¿Ã»ÓĞ³õÊ¼»¯
+						else if (j < token.size() && (token[j].second == "," || token[j].second == ";") && token[j - 1].first == "IDEN") { //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½Ğ³ï¿½Ê¼ï¿½ï¿½
 							for (int l = 0; l < thisstr.strcontent.size(); l++) {
 								array<string, 4> addment = { scope.top(),thisstr.strcontent[l].first, variable + "." + thisstr.strcontent[l].second, ""};
 								temp.add(addment);
@@ -244,7 +244,7 @@ const unordered_set<string> typeword = { "void", "int", "char", "float", "double
 					}
 				}
 
-				else { //ÕâÊÇ¸ö¸³ÖµÓï¾ä£¬ÄÇ¸üºÃÁË
+				else { //ï¿½ï¿½ï¿½Ç¸ï¿½ï¿½ï¿½Öµï¿½ï¿½ä£¬ï¿½Ç¸ï¿½ï¿½ï¿½ï¿½ï¿½
 					bool haseq=false;
 					string expression;
 					string variable;
@@ -323,18 +323,18 @@ const unordered_set<string> typeword = { "void", "int", "char", "float", "double
 						}
 					}
 				}
-				//ÓĞÈË»áÎÊ£¬ÕâÀïÈç¹ûÔÚ²»¸³ÖµµÄÇé¿öÏÂµ÷ÓÃº¯Êı£¬ÄÇÃ´Õâ¸öº¯ÊıµÄ·µ»ØÖµ»áÔõÃ´´¦Àí£¿´ğ°¸ÊÇÃ»ÈË»áÕâÃ´¸É
-				//ÒòÎªÎÒÃÇµÄ±àÒëÆ÷ÉõÖÁ²»Ö§³Öarray£¬ËùÒÔËùÓĞ×Ô¶¨Òåº¯Êı¶¼ÊÇ°´Öµ´«µİµÄ£¬²»´æÔÚÀàËÆsort(array)ÕâÖÖ»á¸ü¸Ä´«Èë²ÎÊıµÄ·½·¨
-				//ËùÒÔ²»¸³Öµ£¬½öµ÷ÓÃÊÇÃ»ÓĞÈÎºÎÒâÒåµÄ£¬ÕâÀï¾Í²»¿¼ÂÇÕâÖÖÇé¿ö
+				//ï¿½ï¿½ï¿½Ë»ï¿½ï¿½Ê£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Âµï¿½ï¿½Ãºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä·ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Ã´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½Ë»ï¿½ï¿½ï¿½Ã´ï¿½ï¿½
+				//ï¿½ï¿½Îªï¿½ï¿½ï¿½ÇµÄ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö§ï¿½ï¿½arrayï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½åº¯ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½Öµï¿½ï¿½ï¿½İµÄ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½sort(array)ï¿½ï¿½ï¿½Ö»ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä·ï¿½ï¿½ï¿½
+				//ï¿½ï¿½ï¿½Ô²ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½Îºï¿½ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½Í²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 				result.setstep(count++, temp);
 				nowline.push_back(i);
 				continue;
 			}
 
-			//µ¥ĞĞÓï¾ä´¦Àí½áÊø
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä´¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-			else if (flag.first == "startif") { //ÕâÊÇ¸öif
+			else if (flag.first == "startif") { //ï¿½ï¿½ï¿½Ç¸ï¿½if
 				string condition="";
 				ifs thisif;
 				for (int j = 0; j < information.allif.size(); j++) {
@@ -368,7 +368,7 @@ const unordered_set<string> typeword = { "void", "int", "char", "float", "double
 				continue;
 			}
 
-			//¶ÔÓÚelse£¬ÎÒÃÇÖ±½ÓÌø¹ı£¬ÒòÎªÈç¹ûelse³ÉÁ¢£¬ÄÇÃ´ÔÚif¶Î»áÖ±½ÓÌøµ½elseµÄÏÂÒ»ĞĞ£¬¸ù±¾²»»á¶ÁÈ¡µ½Õâ¸öelse
+			//ï¿½ï¿½ï¿½ï¿½elseï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½elseï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã´ï¿½ï¿½ifï¿½Î»ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½elseï¿½ï¿½ï¿½ï¿½Ò»ï¿½Ğ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½else
 			else if (flag.first == "startelse") { 
 				for (int j = 0; j < information.allif.size(); j++) {
 					if (information.allif[j].elsestartline == i) {
@@ -397,7 +397,7 @@ const unordered_set<string> typeword = { "void", "int", "char", "float", "double
 				continue;
 			}
 
-			else if (flag.first == "startfor") { //ÕâÊÇ¸öfor
+			else if (flag.first == "startfor") { //ï¿½ï¿½ï¿½Ç¸ï¿½for
 				string initialization;
 				loops thisloop;
 				for (int j = 0; j < information.allloop.size(); j++) {
@@ -438,7 +438,7 @@ const unordered_set<string> typeword = { "void", "int", "char", "float", "double
 				nowline.push_back(i);
 				continue;
 			}
-			else if (flag.first == "endfor") { //ÕâÊÇ¸öendfor
+			else if (flag.first == "endfor") { //ï¿½ï¿½ï¿½Ç¸ï¿½endfor
 				string loopcondition;
 				string loopstep;
 				loops thisloop;
@@ -491,8 +491,8 @@ const unordered_set<string> typeword = { "void", "int", "char", "float", "double
 				for (int j = s + 1; j <= e - 1; j++) {
 					loopcondition += fortoken[j].second;
 				}
-				if (loopcondition == "") loopcondition = "1"; //Èç¹ûÃ»ÓĞÌõ¼ş£¬ÄÇÃ´¾ÍÄ¬ÈÏÎªÕæ£¨ÎŞÏŞÑ­»·)
-				if (evaluateExpression(loopcondition).first > 0) { //Èç¹ûÌõ¼ş³ÉÁ¢
+				if (loopcondition == "") loopcondition = "1"; //ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã´ï¿½ï¿½Ä¬ï¿½ï¿½Îªï¿½æ£¨ï¿½ï¿½ï¿½ï¿½Ñ­ï¿½ï¿½)
+				if (evaluateExpression(loopcondition).first > 0) { //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 					result.setstep(count++, temp);
 					nowline.push_back(i);
 					i = thisloop.startline;
@@ -507,7 +507,7 @@ const unordered_set<string> typeword = { "void", "int", "char", "float", "double
 				}
 			}
 
-			else if (flag.first == "startwhile") { //ÕâÊÇ¸öwhile
+			else if (flag.first == "startwhile") { //ï¿½ï¿½ï¿½Ç¸ï¿½while
 				string condition;
 				loops thisloop;
 				for (int j = 0; j < information.allloop.size(); j++) {
@@ -534,7 +534,7 @@ const unordered_set<string> typeword = { "void", "int", "char", "float", "double
 				continue;
 			}
 
-			else if (flag.first == "endwhile") { //ÕâÊÇ¸öendwhile
+			else if (flag.first == "endwhile") { //ï¿½ï¿½ï¿½Ç¸ï¿½endwhile
 				string condition;
 				loops thisloop;
 				for (int j = 0; j < information.allloop.size(); j++) {

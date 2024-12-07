@@ -1,7 +1,11 @@
 
 #include "mytexteditor.h"
+#include "Lexical/Lexical.h"
 #include <string>
 #include <QTextCursor>
+#include <QFile>
+#include <QTextStream>
+#include <QCoreApplication>
 
 MyTextEditor::MyTextEditor(QWidget *parent)
     : QTextEdit(parent)
@@ -14,7 +18,7 @@ MyTextEditor::MyTextEditor(QWidget *parent)
     std::deque<QString> redoDeque{};
     this->m_redoDeque = redoDeque;
 
-    // 输入文本 -> 触发slot: updateTextEditor
+    // 输入文本 -> 触发refreshTextEditor
     connect(this, &QTextEdit::textChanged, this, &MyTextEditor::refreshEditor);
 
 
@@ -116,6 +120,7 @@ void MyTextEditor::refreshEditor()
 
     // qDebug() << "before get";   // test
     QString newText = this->QTextEdit::toPlainText();
+    qDebug() << "new text: " << newText << "\n";
     // newText.append("->HelloWorld");  // test
     // qDebug() << "after get";    // test
     // qDebug() << newText;    // test
@@ -137,7 +142,30 @@ void MyTextEditor::refreshEditor()
         // qDebug() << "new text: " << this->m_cText;
         // qDebug() << "after reset undo/redo";   // test
 
-        std::string strText = newText.QString::toStdString();   // 转换为string供lexer/debugger使用
+        // // HIGHLIGHTING
+        // QString tempPath = QCoreApplication::applicationDirPath();
+        // tempPath.append("\\tempFile.cpp");
+        // QFile tempFile(tempPath);
+        // tempFile.open(QIODeviceBase::WriteOnly);
+        // QTextStream out(&tempFile);
+        // out << newText;
+        // tempFile.close();
+
+        // string strText = HL::highlightHTML(tempPath.QString::toStdString());   // 转换为string (html form)
+        // newText = QString::fromStdString(strText);
+        // qDebug() << "new text html: " << newText << "\n";
+
+        // // debug highlighting
+        // QString testPath = QCoreApplication::applicationDirPath();
+        // testPath.append("\\testFile.cpp");
+        // QFile testFile(testPath);
+        // testFile.open(QIODeviceBase::WriteOnly);
+        // QTextStream testOutput(&testFile);
+        // testOutput << newText;
+        // testFile.close();
+
+        // qDebug() << "html printed on the editor: " << this->toHtml() << "\n";
+        // qDebug() << "plain text printed on the editor: " << this->toPlainText() << "\n";
 
         // 记录光标位置
         QTextCursor cursor = this->textCursor();
@@ -146,6 +174,7 @@ void MyTextEditor::refreshEditor()
 
         // 展示更新后的文本
         // qDebug() << "before set";   // test
+        // this->QTextEdit::setHtml(newText);
         this->QTextEdit::setPlainText(newText);
         // qDebug() << "after set";    // test
         // qDebug() << "new text: " << newText;    // test

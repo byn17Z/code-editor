@@ -46,15 +46,18 @@ DJumpWindow::~DJumpWindow() {}
 void DJumpWindow::getInput()
 {
     const char* userInput = this->m_inputLine->text().toStdString().c_str();
+    // check input: is all digit?
     for (int i = 0; i < std::strlen(userInput); i++) {
+        // if exist non-digit character
         if (! std::isdigit(userInput[i])) {
             this->m_infoBrowser->setPlainText("Invalid input. Please input an integer!");
             this->m_inputLine->clear();
             return;
         }
     }
+    // ->integer
     int lineNum = std::atoi(userInput);
-    // 发一个信号（传递lineNum）
+    // 发一个信号（传递lineNum给父窗口）
     emit sendLineNum(lineNum);
     this->~DJumpWindow();
 

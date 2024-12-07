@@ -1,5 +1,5 @@
 //
-// Created by Âíå·Ôó on 2024/10/21.
+// Created by ï¿½ï¿½ï¿½ï¿½ï¿½ on 2024/10/21.
 //
 
 #ifndef APIOFLEXICAL_DEBUGVER_H
@@ -14,11 +14,13 @@
 
 using namespace std;
 
-// È«¾Ö±äÁ¿ÉùÃ÷
-extern bool hasBeenComment;
-extern vector<pair<string, string>> output;
+// È«ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+extern bool hasBeenCommentd;
+extern vector<pair<string, string>> outputd;
 
-// º¯ÊýÉùÃ÷
+namespace DB {
+
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 void getpair(string first, string second);
 
 bool isKeyWord(string word);
@@ -40,5 +42,7 @@ void dealWithChar(string& input, int& pos, char peek);
 
 void words(string input, bool& hasBeenComment);
 vector<pair<string, string>> gettoken(string filename);
+
+}
 
 #endif // APIOFLEXICAL_DEBUGVER_H

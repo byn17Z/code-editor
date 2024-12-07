@@ -15,40 +15,10 @@ public:
     Widget(QWidget *parent = nullptr);
     ~Widget();
 
-    // //QPROPEERTY myEditor
-    // Q_PROPERTY(MyTextEditor* myEditor MEMBER m_myEditor READ myEditor WRITE setEditor NOTIFY myEditorChanged)
-
-    // //QPROPEERTY cFilePath
-    // Q_PROPERTY(QString cFilePath MEMBER m_cFilePath READ cFilePath WRITE setcFilePath NOTIFY cFilePathChanged)
-
-    // //QPROPEERTY cFilePath
-    // Q_PROPERTY(QString isCFileSaved MEMBER m_isCFileSaved READ isCFileSaved WRITE setisCFileSaved NOTIFY isCFileSavedChanged)
-
-
-    // //READ - myEditor
-    // MyTextEditor* myEditor();
-
-    // //READ - cFilePath
-    // QString cFilePath();
-
-    // //READ - isCFileSaved
-    // bool isCFileSaved();
-
-    // READ - myDebugger
     MyDebugger* myDebugger();
 
 
 public slots:
-
-    // //WRITE - myEditor
-    // void setEditor(MyTextEditor* textEditor);
-
-    // //WRITE - cFilePath
-    // void setcFilePath(QString path);
-
-    // //WRITE - isCFileSaved
-    // void setisCFileSaved();
-
 
     //ACTION SLOTS
     // menu: file
@@ -67,17 +37,14 @@ public slots:
     void dJumpSlot();
     void dTmnSlot();
 
+    // menu: compile
+    void compileSlot();
+    void runSlot();
+
 
 signals:
-
-    // //SIGNAL - myEditor
-    // void myEditorChanged();
-
-    // //SIGNAL - cFilePath
-    // void cFilePathChanged();
-
-    // //SIGNAL - isCFileSaved
-    // void isCFileSavedChanged();
+    void sendIsDebuggerOn(bool);
+    void sendIsDebuggerOff(bool);
 
 private:
 
@@ -87,15 +54,13 @@ private:
 
     MyDebugger* m_myDebugger = NULL;
 
-    // DJumpWindow* m_dJumpWin;
-
-    bool m_isDebuggerOn = 0;
+    // bool m_isDebuggerOn = 0;
 
     QString m_cFilePath = "";
 
     bool m_saveSuccess = 1;
 
-    // bool m_isCFileSaved = 1;
+    QString m_exePath = "";
 
 };
 
