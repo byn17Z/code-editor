@@ -108,6 +108,17 @@ void MyTextEditor::redo()
 
 
 
+// 清空
+void MyTextEditor::editorClear()
+{
+    this->clear();
+    this->m_undoDeque.clear();
+    this->m_redoDeque.clear();
+}
+
+
+
+
 // 更新文本区状态的槽函数
 // 用户每次输入文本时 触发槽函数slot: refreshEditor以：
 // 1、用QTextEdit::toPlainText记录当前文本并更新至newText (o)
@@ -142,18 +153,22 @@ void MyTextEditor::refreshEditor()
         // qDebug() << "new text: " << this->m_cText;
         // qDebug() << "after reset undo/redo";   // test
 
-        // // HIGHLIGHTING
-        // QString tempPath = QCoreApplication::applicationDirPath();
-        // tempPath.append("\\tempFile.cpp");
-        // QFile tempFile(tempPath);
-        // tempFile.open(QIODeviceBase::WriteOnly);
-        // QTextStream out(&tempFile);
-        // out << newText;
-        // tempFile.close();
+        // HIGHLIGHTING
+        if (this->m_isHLon)
+            {
+            qDebug() << "Highlight";
+            QString tempPath = QCoreApplication::applicationDirPath();
+                tempPath.append("\\tempFile.cpp");
+                QFile tempFile(tempPath);
+                tempFile.open(QIODeviceBase::WriteOnly);
+                QTextStream out(&tempFile);
+                out << newText;
+                tempFile.close();
 
-        // string strText = HL::highlightHTML(tempPath.QString::toStdString());   // 转换为string (html form)
-        // newText = QString::fromStdString(strText);
-        // qDebug() << "new text html: " << newText << "\n";
+                string strText = HL::highlightHTML(tempPath.QString::toStdString());   // 转换为string (html form)
+                newText = QString::fromStdString(strText);
+                qDebug() << "new text html: " << newText << "\n";
+            }
 
         // // debug highlighting
         // QString testPath = QCoreApplication::applicationDirPath();
@@ -175,7 +190,7 @@ void MyTextEditor::refreshEditor()
         // 展示更新后的文本
         // qDebug() << "before set";   // test
         // this->QTextEdit::setHtml(newText);
-        this->QTextEdit::setPlainText(newText);
+        this->QTextEdit::setText(newText);
         // qDebug() << "after set";    // test
         // qDebug() << "new text: " << newText;    // test
 
@@ -199,6 +214,17 @@ void MyTextEditor::refreshEditor()
     // qDebug() << typeName;
 }
 
+
+
+void MyTextEditor::switchHL()
+{
+    if (this->m_isHLon == 0) {
+        this->m_isHLon = 1;
+    } else {
+        this->m_isHLon = 0;
+    }
+    qDebug() << this->m_isHLon;
+}
 
 
 

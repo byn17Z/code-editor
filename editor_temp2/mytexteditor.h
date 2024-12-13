@@ -26,12 +26,14 @@ public:
 
 public slots:
     void pushUndo(QString qstr);
-
-    void pushRedo(QString qstr);
-
     void undo();
 
+    void pushRedo(QString qstr);
     void redo();
+
+    void editorClear();
+
+    void switchHL();
 
     void refreshEditor();
 
@@ -48,6 +50,9 @@ private:
 
     // 撤回次数
     int m_undoTimes = 5;
+
+    // 高亮功能
+    bool m_isHLon = 0;
 };
 
 #endif // MYTEXTEDITOR_H

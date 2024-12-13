@@ -1,21 +1,5 @@
 #include "widget.h"
-#include "mytexteditor.h"
-#include "djumpwindow.h"
-#include <QPushButton>
-#include <QMenuBar>
-#include <QMenu>
-#include <QAction>
-#include <QLineEdit>
-#include <QTextEdit>
-#include <QTextBrowser>
-#include <QStatusBar>
-#include <QFileDialog>
-#include <QCoreApplication>
-#include <QIODevice>
-#include <QFile>
-#include <QMessageBox>
-#include <QLabel>
-# include <QProcess>
+
 
 
 //CONSTRUCTOR
@@ -119,19 +103,26 @@ Widget::Widget(QWidget *parent)
 
             QAction* actCompile = new QAction("Compile", this);
             menuCompile->addAction(actCompile);
-            // connect(actCompile, &QAction::triggered, this, &Widget::compileSlot);
+            connect(actCompile, &QAction::triggered, this, &Widget::compileSlot);
             connect(this, &Widget::sendIsDebuggerOff, actCompile, &QAction::setEnabled);
 
             QAction* actRun = new QAction("Run", this);
             menuCompile->addAction(actRun);
-            // connect(actRun, &QAction::triggered, this, &Widget::runSlot);
+            actRun->QAction::setEnabled(0);
+            connect(actRun, &QAction::triggered, this, &Widget::runSlot);
             connect(this, &Widget::sendIsDebuggerOff, actRun, &QAction::setEnabled);
+            connect(this, &Widget::sendIsCompiled, actRun, &QAction::setEnabled);
+
 
 
     QPushButton* btnRefresh = new QPushButton("Refresh", this);
-    btnRefresh->move(450, 0);
-
+    btnRefresh->move(500, 0);
     connect(btnRefresh, &QAbstractButton::pressed, this->m_myEditor, &MyTextEditor::refreshEditor);
+
+    QPushButton* btnHL = new QPushButton("Highlight", this);
+    btnHL->move(400, 0);
+    connect(btnHL, &QAbstractButton::pressed, this->m_myEditor, &MyTextEditor::switchHL);
+    connect(btnHL, &QAbstractButton::pressed, this->m_myEditor, &MyTextEditor::refreshEditor);
 
 
     //TEST
@@ -154,6 +145,7 @@ Widget::Widget(QWidget *parent)
     statusBar->resize(900, 20);
     statusBar->show();
     statusBar->showMessage("Ready", 1000);
+    connect(this, &Widget::sendStatus, statusBar, &QStatusBar::showMessage);
 
 }
 
@@ -181,6 +173,7 @@ void Widget::newSlot()
     if (fileName.isEmpty()) {return;}
 
     else {
+        emit sendStatus("New", 1000);
         qDebug() << fileName;
 
         // 关闭当前文件
@@ -192,7 +185,7 @@ void Widget::newSlot()
 
         QFile file(fileName);
         file.open(QIODevice::WriteOnly);
-        file.close();
+        file.close();   
     }
 
     // this->m_isCFileSaved = 0;
@@ -212,6 +205,7 @@ void Widget::openSlot()
     if (fileName.isEmpty()) {return;}
 
     else {
+        emit sendStatus("Open", 1000);
         qDebug() << fileName;
 
         // 关闭当前文件
@@ -228,6 +222,7 @@ void Widget::openSlot()
         this->m_myEditor->setPlainText(openContent);
         file.close();
 
+        emit sendIsCompiled(0);
         // this->m_isCFileSaved = 0;
     }
 }
@@ -240,6 +235,7 @@ void Widget::saveSlot()
     if (this->m_cFilePath.isEmpty()) {this->Widget::saveAsSlot();}
 
     else {
+        emit sendStatus("Save", 1000);
         qDebug() << this->m_cFilePath;
 
         // 保存文件到当前路径
@@ -249,7 +245,6 @@ void Widget::saveSlot()
         file.write(saveContent);
 
         // this->m_saveSuccess = 1;
-
         // this->m_isCFileSaved = 1;
     }
 }
@@ -272,6 +267,7 @@ void Widget::saveAsSlot()
     }
 
     else {
+        emit sendStatus("Save", 1000);
         qDebug() << fileName;
 
         // 保存文件到选择的路径
@@ -301,6 +297,7 @@ void Widget::closeSlot()
     if (this->m_cFilePath.isEmpty()) {
         if (this->m_myEditor->toPlainText().isEmpty()) {
             this->m_myTerminal->clear();
+            emit sendIsCompiled(0);
             return;}
     }
 
@@ -308,7 +305,10 @@ void Widget::closeSlot()
     QMessageBox* msgBox = new QMessageBox(this);
         msgBox->setText("Warning");
         msgBox->setInformativeText("Do you want to save your changes");
-        msgBox->setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        QFlags<QMessageBox::StandardButton> btnSave = QFlags(QMessageBox::Save);
+        QFlags<QMessageBox::StandardButton> btnDiscard = QFlags(QMessageBox::Discard);
+        QFlags<QMessageBox::StandardButton> btnCancel = QFlags(QMessageBox::Cancel);
+        msgBox->setStandardButtons(btnSave | btnDiscard | btnCancel);
         msgBox->setDefaultButton(QMessageBox::Save);
 
     int ret = msgBox->exec();
@@ -321,9 +321,12 @@ void Widget::closeSlot()
 
         // 清空窗口（如果用户在跳转另存为后关闭了另存为窗口，未完成保存过程，则放弃清空）
         if (this->m_saveSuccess) {
+            emit sendStatus("Close", 1000);
             this->m_cFilePath = "";
-            this->m_myEditor->clear();
+            this->m_exePath = "";
+            this->m_myEditor->editorClear();
             this->m_myTerminal->clear();
+            emit sendIsCompiled(0);
         }
 
         // this->m_isCFileSaved = 1;
@@ -332,9 +335,12 @@ void Widget::closeSlot()
     case QMessageBox::Discard:
         // Don't Save was clicked
         // 只清空不保存
+        emit sendStatus("Close", 1000);
         this->m_cFilePath = "";
-        this->m_myEditor->clear();
+        this->m_exePath = "";
+        this->m_myEditor->editorClear();
         this->m_myTerminal->clear();
+        emit sendIsCompiled(0);
         // this->m_isCFileSaved = 1;
         break;
 
@@ -403,6 +409,8 @@ void Widget::updateDebuggerInfo()
 //actDebug 启动debugger
 void Widget::debugSlot()
 {
+    if (this->m_myEditor->toPlainText().isEmpty()) {return;}
+
     this->saveSlot();
     if (m_cFilePath.isEmpty()) {return;}
 
@@ -414,6 +422,7 @@ void Widget::debugSlot()
     //     this->m_myTerminal->setPlainText(this->m_cFilePath);
     // }
     // this->m_isDebuggerOn = 1;
+    emit sendStatus("Debug Start", 3000);
     emit sendIsDebuggerOn(1);
     emit sendIsDebuggerOff(0);
 
@@ -449,9 +458,11 @@ void Widget::dNextSlot()
     qDebug() << "after next";
 
     if (isNextSuccess){
+        emit sendStatus("Next", 1000);
         this->updateDebuggerInfo();
     }
     else {
+        emit sendStatus("Invalid Next Action", 2000);
         this->m_myTerminal->append("last step of the program");
         return;
     }
@@ -468,9 +479,11 @@ void Widget::dPreSlot()
     qDebug() << "after pre";
 
     if (isPreSuccess) {
+        emit sendStatus("Previous", 1000);
         this->updateDebuggerInfo();
     }
     else {
+        emit sendStatus("Invalid Previous Action", 2000);
         this->m_myTerminal->append("first step of the program");
     }
 }
@@ -481,9 +494,11 @@ void Widget::recvLineNumJump(int a)
 {
     bool isJumpSuccess = this->m_myDebugger->jump(a);
     if (isJumpSuccess) {
+        emit sendStatus("Jump", 1000);
         this->updateDebuggerInfo();
     }
     else {
+        emit sendStatus("Invalid JumpAction", 2000);
         this->m_myTerminal->append("invalid jump");
     }
 }
@@ -507,12 +522,13 @@ void Widget::dTmnSlot()
     //     qDebug() << "invalid \"Terminate\" action";
     //     return;
     // }
+    emit sendStatus("Debug Terminate", 1000);
 
     this->m_myDebugger->User::~User();
     this->m_myDebugger = NULL;
-    if (this->m_myDebugger == NULL) {
-        qDebug() << "clear debugger success";
-    }
+    // if (this->m_myDebugger == NULL) {
+    //     qDebug() << "clear debugger success";
+    // }
     this->m_myTerminal->clear();
     this->m_myTerminal->setPlainText(this->m_cFilePath);
 
@@ -530,6 +546,13 @@ void Widget::dTmnSlot()
 // actCompile
 void Widget::compileSlot()
 {
+    if (this->m_myEditor->toPlainText().isEmpty()) {return;}
+
+    QProcess test(this);
+    test.QProcess::start("cmd.exe", QStringList() << "/c" << "cmake" << "--version");
+    QString testMes = QString::fromLocal8Bit(test.QProcess::readAllStandardOutput());
+    qDebug() << testMes;
+
     if (this->m_exePath.isEmpty()) {
         // prompt用户选择生成可执行文件的路径
         QString fileName = QFileDialog::getSaveFileName(
@@ -539,19 +562,82 @@ void Widget::compileSlot()
 
         if (fileName.isEmpty()) {return;}
         else {
+            emit sendStatus("Compiling", 100000);
             qDebug() << "create executable in: " << fileName;
             this->m_exePath = fileName;
 
             // call compiler
+            QProcess process(this);
+            process.QProcess::setProgram("cmd.exe");
+            QStringList args = QStringList()
+                               << "/c"
+                               << QCoreApplication::applicationDirPath() + "/Compiler.exe"
+                               << this->m_cFilePath
+                               << this->m_exePath;
+            process.QProcess::setArguments(args);
+            qDebug() << args;
+
+            process.QProcess::start();
+            process.QProcess::waitForStarted();
+            qDebug() << "started";
+            process.QProcess::waitForFinished(60000);
+
+            QString tmnMessage = QString::fromLocal8Bit(process.QProcess::readAllStandardOutput());
+            qDebug() << tmnMessage;
+            this->m_myTerminal->append(tmnMessage);
             ////////////////
+            emit sendIsCompiled(1);
+            emit sendStatus("Compile over", 1000);
         }
     }
     else {
         // call compiler
+        emit sendStatus("Compiling", 100000);
+        QProcess process(this);
+        process.QProcess::setProgram("cmd.exe");
+        QStringList args = QStringList()
+                           << "/c"
+                           << QCoreApplication::applicationDirPath() + "/Compiler.exe"
+                           << this->m_cFilePath
+                           << this->m_exePath;
+        process.QProcess::setArguments(args);
+        qDebug() << args;
+
+        process.QProcess::start();
+        process.QProcess::waitForStarted();
+        qDebug() << "started";
+        process.QProcess::waitForFinished(60000);
+
+        QString tmnMessage = QString::fromLocal8Bit(process.QProcess::readAllStandardOutput());
+        qDebug() << tmnMessage;
+        this->m_myTerminal->append(tmnMessage);
+        ////////////////
+        emit sendIsCompiled(1);
+        emit sendStatus("Compile over", 1000);
         ////////////////
     }
 }
-void Widget::runSlot() {}
+void Widget::runSlot()
+{
+    QFile exe(this->m_exePath);
+    if (exe.open(QIODeviceBase::ExistingOnly)){
+        emit sendStatus("Running", 100000);
+        qDebug() << "run";
+        QProcess process(this);
+        process.start(this->m_exePath);
+        process.QProcess::waitForStarted();
+        process.QProcess::waitForFinished(180000);
+        QString tmnMessage = QString::fromLocal8Bit(process.QProcess::readAllStandardOutput());
+        qDebug() << tmnMessage;
+        this->m_myTerminal->append(tmnMessage);
+        emit sendStatus("End", 1000);
+    } else {
+        emit sendStatus("No Executable Found", 1000);
+        this->compileSlot();
+    }
+}
+
+
 
 
 //DECONSTRUCTOR

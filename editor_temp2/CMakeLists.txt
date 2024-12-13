@@ -75,17 +75,18 @@ if(QT_VERSION_MAJOR EQUAL 6)
 endif()
 
 
+# 添加项目的子目录
 add_subdirectory(Debugger)
-target_link_libraries(Editor PUBLIC debugger_lib)
+add_subdirectory(Lexical)
+
+# 添加链接库
+target_link_libraries(Editor PUBLIC
+    debugger_lib
+    Lexical_HL
+)
 target_include_directories(Editor PUBLIC
     "${PROJECT_BINARY_DIR}"
     "${PROJECT_SOURCE_DIR}/Debugger"
-)
-
-add_subdirectory(Lexical)
-target_link_libraries(Editor PUBLIC Lexical)
-target_include_directories(Editor PUBLIC
-    "${PROJECT_BINARY_DIR}"
     "${PROJECT_SOURCE_DIR}/Lexical"
 )
 

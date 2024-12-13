@@ -1,5 +1,5 @@
 ﻿# 设置库名称
-project(Lexical)
+project(Lexical_HL)
 
 # 包含头文件目录
 include_directories(${PROJECT_SOURCE_DIR})
@@ -8,4 +8,4 @@ include_directories(${PROJECT_SOURCE_DIR})
 file(GLOB SOURCES "${PROJECT_SOURCE_DIR}/*.cpp")
 
 # 添加库
-add_library(Lexical ${SOURCES})
+add_library(Lexical_HL ${SOURCES})

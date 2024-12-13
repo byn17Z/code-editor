@@ -6,6 +6,26 @@
 #include "mytexteditor.h"
 #include "mydebugger.h"
 #include "djumpwindow.h"
+#include "mytexteditor.h"
+#include "djumpwindow.h"
+#include <QPushButton>
+#include <QMenuBar>
+#include <QMenu>
+#include <QAction>
+#include <QLineEdit>
+#include <QTextEdit>
+#include <QTextBrowser>
+#include <QStatusBar>
+#include <QFileDialog>
+#include <QCoreApplication>
+#include <QIODevice>
+#include <QFile>
+#include <QMessageBox>
+#include <QLabel>
+#include <QProcess>
+#include <QFlags>
+#include <QProcess>
+#include <QFile>
 
 class Widget : public QWidget
 {
@@ -45,6 +65,8 @@ public slots:
 signals:
     void sendIsDebuggerOn(bool);
     void sendIsDebuggerOff(bool);
+    void sendIsCompiled(bool);
+    void sendStatus(const QString&, int);
 
 private:
 
