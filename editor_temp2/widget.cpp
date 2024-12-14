@@ -548,19 +548,20 @@ void Widget::compileSlot()
 {
     if (this->m_myEditor->toPlainText().isEmpty()) {return;}
 
-    QProcess test(this);
-    test.QProcess::start("cmd", QStringList() << "/c" << "cmake" << "--version");
-    test.QProcess::waitForStarted();
-    test.QProcess::waitForFinished();
-    QString testMes = QString::fromLocal8Bit(test.QProcess::readAllStandardOutput());
-    qDebug() << testMes;
+    // QProcess test(this);
+    // test.QProcess::start("cmd", QStringList() << "/c" << "cmake" << "--version");
+    // test.QProcess::waitForStarted();
+    // test.QProcess::waitForFinished();
+    // QString testMes = QString::fromLocal8Bit(test.QProcess::readAllStandardOutput());
+    // qDebug() << testMes;
 
     if (this->m_exePath.isEmpty()) {
         // prompt用户选择生成可执行文件的路径
         QString fileName = QFileDialog::getSaveFileName(
             this,
             "choose a path for executable",
-            QCoreApplication::applicationFilePath());
+            QCoreApplication::applicationFilePath(),
+            "*.exe");
 
         if (fileName.isEmpty()) {return;}
         else {
@@ -571,35 +572,17 @@ void Widget::compileSlot()
             // call compiler
             emit sendStatus("Compiling", 100000);
             QProcess process(this);
-            // process.QProcess::setProgram("cmd.exe");
             QString program = QCoreApplication::applicationDirPath() + "/Compiler.exe";
-
             QStringList args;
-            args << "/c" << program << this->m_cFilePath << this->m_exePath;
+            args /*<< "/c" << program*/ << this->m_cFilePath << this->m_exePath;
             qDebug() << args;
-            QString qstr;
-            qstr += "/c";
-            qstr += "Compiler";
-            qstr += this->m_cFilePath;
-            qstr += this->m_exePath;
-
 
             connect(&process, &QProcess::started, this, &Widget::rcvProcessStart);
             connect(&process, &QProcess::finished, this, &Widget::rcvProcessFinish);
 
-            // process.QProcess::start("cmd.exe", QStringList() <<"/c" <<"D:");
-            // process.QProcess::waitForStarted();
-            // process.QProcess::write(qstr.toLocal8Bit());
-            // process.QProcess::write("exit");
-            // process.QProcess::waitForFinished();
-
-            process.QProcess::start("cmd.exe", args);
+            process.QProcess::start(program, args);
             process.QProcess::waitForStarted();
             qDebug() << "started";
-            process.QProcess::waitForReadyRead(60000);
-            QString message = QString::fromLocal8Bit(process.QProcess::readAllStandardOutput());
-            qDebug() << "ready read: " << message;
-
             process.QProcess::waitForFinished(60000);
 
             QString tmnMessage = QString::fromLocal8Bit(process.QProcess::readAllStandardOutput());
@@ -630,12 +613,6 @@ void Widget::compileSlot()
 
         connect(&process, &QProcess::started, this, &Widget::rcvProcessStart);
         connect(&process, &QProcess::finished, this, &Widget::rcvProcessFinish);
-
-        // process.QProcess::start("cmd.exe", QStringList() <<"/c" <<"D:");
-        // process.QProcess::waitForStarted();
-        // process.QProcess::write(qstr.toLocal8Bit());
-        // process.QProcess::write("exit");
-        // process.QProcess::waitForFinished();
 
         process.QProcess::start("cmd.exe", args);
         process.QProcess::waitForStarted();
