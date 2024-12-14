@@ -60,6 +60,8 @@ public slots:
     // menu: compile
     void compileSlot();
     void runSlot();
+    void rcvProcessStart();
+    void rcvProcessFinish(int , QProcess::ExitStatus);
 
 
 signals:
