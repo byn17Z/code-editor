@@ -7,11 +7,11 @@ git clone --branch v6.8.0 git://code.qt.io/qt/qt5.git .
 ***
 
 ### debugger: 
-```https://github.com/paopaobj/debugger.git```
+<https://github.com/paopaobj/debugger.git>
 @paopaobj
 
 ### compiler: 
-```https://github.com/zhaoyiyidan/Compiler.git```
+<https://github.com/zhaoyiyidan/Compiler.git>
 @zhaoyiyidan
 @Mchze050610
 @Hanshu152
