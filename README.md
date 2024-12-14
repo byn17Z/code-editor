@@ -9,3 +9,8 @@ git clone --branch v6.8.0 git://code.qt.io/qt/qt5.git .
 
 
 debugger: @paopaobj
+
+compiler: ```https://github.com/zhaoyiyidan/Compiler.git```
+@zhaoyiyidan
+@Mchze050610
+@Hanshu152
